@@ -70,7 +70,7 @@ npm run deploy
 
 This will build the project and push the contents of the dist/ folder to the GitHub Pages branch.
 The live app will be available at:
-👉[https://smartphonefreechildhood.github.io/parent-pact-map](https://smartphonefreechildhood.github.io/parent-pact-map)
+👉[https://ki-ds-org.github.io/parent-pact-map](https://ki-ds-org.github.io/parent-pact-map)
 
 > **Note:** The Vite config (`vite.config.ts`) is customized to output static filenames (`index.js`, `index.css`) to ensure the embed code stays stable across deployments.
 
@@ -81,12 +81,12 @@ To embed the widget into a WordPress page (e.g., using an Elementor HTML widget)
 ```html
 <link
   rel="stylesheet"
-  href="https://smartphonefreechildhood.github.io/parent-pact-map/assets/index.css"
+  href="https://ki-ds-org.github.io/parent-pact-map/assets/index.css"
 />
 <div id="react-widget" style="width: 100%; height: 84vh;">
   <div id="react-pact-map"></div>
 </div>
-<script src="https://smartphonefreechildhood.github.io/parent-pact-map/assets/index.js"></script>
+<script src="https://ki-ds-org.github.io/parent-pact-map/assets/index.js"></script>
 ```
 
 ### Embed Notes:
