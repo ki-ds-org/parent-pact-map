@@ -109,7 +109,7 @@ ReactDOM.createRoot(document.getElementById("react-pact-map")!).render(<App />);
 To force browsers to reload the latest version, you can append a version query:
 
 ```html
-<script src="https://smartphonefreechildhood.github.io/parent-pact-map/assets/index.js?v=1.0.4"></script>
+<script src="https://ki-ds-org.github.io/parent-pact-map/assets/index.js?v=1.0.4"></script>
 ```
 
 ## 🧩 Data Processing Scripts
