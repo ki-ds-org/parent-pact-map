@@ -1,20 +1,41 @@
-import { useMemo } from "react";
-import data from "../scripts/pacts_with_coordinates.json";
+import { useEffect, useState } from "react";
+import { config } from "../config/env";
 import type { Pact } from "../types/Pact";
 
-function mapDataToPacts(data: any) : Pact[] {
-  return data.map((item: any) => ({
-    ...item,
-  }));
-}
+function usePacts(): {
+  pacts: Pact[];
+  loading: boolean;
+  error: string | null;
+  retry: () => void;
+} {
+  const [pacts, setPacts] = useState<Pact[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-// TODO: Currenlty we retrieve this data from a json file. If data is provided by a an endpoint in the future. This should be changed to call that endpoint.
-function usePacts(): { pacts: Pact[] } {
-  const pacts = useMemo(() => {
-    return mapDataToPacts(data);
+  const fetchPacts = () => {
+    setLoading(true);
+    setError(null);
+    fetch(config.pactsApiUrl)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data: unknown) => {
+        const arr = Array.isArray(data) ? data : [];
+        setPacts(arr as Pact[]);
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Failed to load pacts");
+        setPacts([]);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchPacts();
   }, []);
 
-  return { pacts };
+  return { pacts, loading, error, retry: fetchPacts };
 }
 
 export default usePacts;
