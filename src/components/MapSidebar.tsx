@@ -5,6 +5,7 @@ import List from "./List";
 import Pill from "./Pill";
 import Search from "./Search";
 import SearchInfo from "./SearchInfo";
+import SegmentedToggle from "./SegmentedToggle";
 import { config } from "../config/env";
 
 interface MapSidebarProps {
@@ -15,6 +16,10 @@ interface MapSidebarProps {
   closestPacts: Pact[];
   filteredPacts: Pact[];
   currentLocationInfo?: LocationInfo;
+  heatMetric: "students" | "parents";
+  aggregation: "school" | "municipality";
+  onHeatMetricChange: (metric: "students" | "parents") => void;
+  onAggregationChange: (mode: "school" | "municipality") => void;
 }
 
 export default function MapSidebar({
@@ -25,6 +30,10 @@ export default function MapSidebar({
   closestPacts,
   filteredPacts,
   currentLocationInfo,
+  heatMetric,
+  aggregation,
+  onHeatMetricChange,
+  onAggregationChange,
 }: MapSidebarProps) {
   const searchInfoDescription =
     searchQuery || zooming
@@ -47,12 +56,24 @@ export default function MapSidebar({
       <div>
         <div className="w-full flex-1 md:flex-none flex flex-col md:p-2">
           <Search onSearch={onSearch} apiKey={config.googleApiKey!} />
-          <div className="flex py-2 pointer-events-auto">
+          <div className="flex flex-wrap items-center justify-end gap-3 py-2 text-xs text-on-background pointer-events-auto">
             <button className="hover:bg-transparent" onClick={onFindClosest}>
               <Pill>
                 <MapPinIcon className="w-4 h-4" /> Hitta andra nära mig
               </Pill>
             </button>
+            <SegmentedToggle
+              options={["students", "parents"]}
+              value={heatMetric}
+              onChange={onHeatMetricChange}
+              labels={["Elever", "Föräldrar"]}
+            />
+            <SegmentedToggle
+              options={["school", "municipality"]}
+              value={aggregation}
+              onChange={onAggregationChange}
+              labels={["Skolor", "Kommuner"]}
+            />
           </div>
         </div>
       </div>
@@ -71,6 +92,7 @@ export default function MapSidebar({
             filteredPacts={
               closestPacts.length > 0 ? closestPacts : filteredPacts
             }
+            heatMetric={heatMetric}
           />
         ) : null}
       </div>

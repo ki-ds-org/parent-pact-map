@@ -10,6 +10,7 @@ import ZoomStartListener from "./ZoomStartListener";
 interface MapContainerProps {
   heatPoints: [number, number, number][];
   markerPoints: [Pact, [number, number]][];
+  heatMetric: "students" | "parents";
   onVisibleChange: (markers: [Pact, [number, number]][]) => void;
   onZoomStart: () => void;
   onMapRef: (map: L.Map | null) => void;
@@ -19,6 +20,7 @@ interface MapContainerProps {
 export default function MapContainer({
   heatPoints,
   markerPoints,
+  heatMetric,
   onVisibleChange,
   onZoomStart,
   onMapRef,
@@ -60,7 +62,7 @@ export default function MapContainer({
         url="https://maps.geoapify.com/v1/tile/osm-bright-smooth/{z}/{x}/{y}.png?apiKey=c7be631f429d488f953709566022593d"
       />
       <HeatmapLayer points={heatPoints} />
-      <ClusterMarkers coordinates={markerPoints} />
+      <ClusterMarkers coordinates={markerPoints} heatMetric={heatMetric} />
       <VisibleMarkerTracker
         allMarkers={markerPoints}
         onVisibleChange={onVisibleChange}
