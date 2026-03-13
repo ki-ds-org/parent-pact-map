@@ -5,24 +5,35 @@ import noFoundImage from "../assets/not-found.avif";
 
 interface ListProps {
   filteredPacts: Pact[];
+  heatMetric: "students" | "parents";
 }
 
-function List({ filteredPacts }: ListProps) {
+function List({ filteredPacts, heatMetric }: ListProps) {
   return (
     <div className="w-full h-full overflow-y-scroll bg-inherit">
       <div className="">
         <ul className="">
-          {filteredPacts.map((pact, i) => (
-            <ListItem
-              key={`${pact.id}-${i}`}
-              title={`${pact.name}`}
-              description={`${pact.parentCount} ${
-                pact.parentCount === 1 ? "förälder" : "föräldrar"
-              }`}
-              link="https://forms.smartphonefreechildhood.se/pakten"
-              callToAction="Gå med"
-            />
-          ))}
+          {filteredPacts.map((pact, i) => {
+            const count =
+              heatMetric === "parents" ? pact.parentCount : pact.studentCount;
+            const label =
+              heatMetric === "parents"
+                ? pact.parentCount === 1
+                  ? "förälder"
+                  : "föräldrar"
+                : pact.studentCount === 1
+                  ? "elev"
+                  : "elever";
+            return (
+              <ListItem
+                key={`${pact.id}-${i}`}
+                title={`${pact.name}`}
+                description={`${count} ${label}`}
+                link="https://forms.smartphonefreechildhood.se/pakten"
+                callToAction="Gå med"
+              />
+            );
+          })}
         </ul>
         {filteredPacts.length === 0 && (
           <div className="text-center py-2 px-4">
