@@ -37,9 +37,18 @@ function Map({ pacts }: MapProps) {
     LocationInfo | undefined
   >();
   const [isProgrammaticZoom, setIsProgrammaticZoom] = useState(false);
+  const [heatMetric, setHeatMetric] = useState<"students" | "parents">(
+    "students"
+  );
+  const [aggregation, setAggregation] = useState<"school" | "municipality">(
+    "school"
+  );
 
   const isMobile = useIsMobileView();
-  const { heatPoints, markerPoints } = useMapData(pacts);
+  const { heatPoints, markerPoints, pacts: mapPacts } = useMapData(pacts, {
+    heatMetric,
+    aggregation,
+  });
   const { findClosestPacts } = useGeolocation();
 
   const setMapViewWithLayoutDelay = useCallback(
@@ -67,7 +76,7 @@ function Map({ pacts }: MapProps) {
   const handleSearch = (locationInfo: LocationInfo) => {
     // Find the closest pact to the searched location
     const { pacts: closestPacts } = findClosestPacts(
-      pacts,
+      mapPacts,
       locationInfo.coordinates[0],
       locationInfo.coordinates[1],
       1, // Only get the closest one
@@ -127,7 +136,7 @@ function Map({ pacts }: MapProps) {
       const userLng = position.coords.longitude;
 
       const { pacts: closestPacts, closestSchool } = findClosestPacts(
-        pacts,
+      mapPacts,
         userLat,
         userLng,
         3,
@@ -153,7 +162,7 @@ function Map({ pacts }: MapProps) {
 
   // Filter pacts based on visible markers' pactIds
   const visiblePactIds = new Set(visibleMarkers.map(([pact]) => pact.id));
-  const filteredPacts = pacts.filter((pact) => visiblePactIds.has(pact.id));
+  const filteredPacts = mapPacts.filter((pact) => visiblePactIds.has(pact.id));
 
   return (
     <div className="flex h-full relative">
@@ -166,12 +175,17 @@ function Map({ pacts }: MapProps) {
           closestPacts={closestPacts}
           filteredPacts={filteredPacts}
           currentLocationInfo={currentLocationInfo}
+          heatMetric={heatMetric}
+          aggregation={aggregation}
+          onHeatMetricChange={setHeatMetric}
+          onAggregationChange={setAggregation}
         />
 
         <div className={mapContainerClass}>
           <MapContainer
             heatPoints={heatPoints}
             markerPoints={markerPoints}
+            heatMetric={heatMetric}
             onVisibleChange={setVisibleMarkers}
             onZoomStart={handleZooming}
             onMapRef={setMapRef}
@@ -184,6 +198,7 @@ function Map({ pacts }: MapProps) {
           zooming={zooming}
           closestPacts={closestPacts}
           filteredPacts={filteredPacts}
+          heatMetric={heatMetric}
         />
       </div>
     </div>

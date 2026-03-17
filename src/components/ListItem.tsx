@@ -17,9 +17,23 @@ function ListItem({
   callToAction,
 }: ListItemProps) {
   return (
-    <li className="flex flex-col justify-between p-4 bg-inherit border-b border-gray-200 transition-shadow duration-200">
-      <div className="flex-1">
+    <li className="flex flex-col p-4 bg-inherit border-b border-gray-200 transition-shadow duration-200">
+      <div className="flex items-center justify-between gap-2">
         <h3 className="font-medium flex gap-1 text-lg">{title}</h3>
+        {callToAction && (
+          <Button
+            as="a"
+            href={link}
+            variant="primary"
+            target="_blank"
+            rel="noopener noreferrer"
+            size="sm"
+          >
+            {callToAction}
+          </Button>
+        )}
+      </div>
+      <div className="flex-1">
         <p className="flex gap-1 text-sm">{description}</p>
         <p className="flex flex-wrap gap-2 pt-2">
           {pills?.map((pill) => {
@@ -30,18 +44,6 @@ function ListItem({
             );
           })}
         </p>
-      </div>
-      <div className="flex self-start pt-2">
-        <Button
-          as="a"
-          href={link}
-          variant="primary"
-          target="_blank"
-          rel="noopener noreferrer"
-          size="sm"
-        >
-          {callToAction}
-        </Button>
       </div>
     </li>
   );

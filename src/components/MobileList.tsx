@@ -8,6 +8,7 @@ interface MobileListProps {
   zooming: boolean;
   closestPacts: Pact[];
   filteredPacts: Pact[];
+  heatMetric: "students" | "parents";
 }
 
 export default function MobileList({
@@ -15,6 +16,7 @@ export default function MobileList({
   zooming,
   closestPacts,
   filteredPacts,
+  heatMetric,
 }: MobileListProps) {
   const listClass = classNames(
     "w-full overflow-y-scroll bg-inherit pointer-events-auto border border-primary rounded-b-lg md:hidden",
@@ -45,6 +47,7 @@ export default function MobileList({
       {searchQuery || zooming ? (
         <List
           filteredPacts={closestPacts.length > 0 ? closestPacts : filteredPacts}
+          heatMetric={heatMetric}
         />
       ) : null}
     </div>
