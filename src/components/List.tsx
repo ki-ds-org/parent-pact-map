@@ -56,7 +56,7 @@ function List({ filteredPacts, heatMetric }: ListProps) {
             <div className="flex justify-center md:w-1/2 mx-auto">
               <a
                 href="https://forms.smartphonefreechildhood.se/pakten"
-                className="w-full block text-center px-4 py-1 text-sm rounded-3xl font-semibold bg-primary text-on-primary hover:bg-primary/80 transition-colors"
+                className="pact-btn-link w-full block text-center px-4 py-1 text-sm rounded-3xl font-semibold bg-primary text-on-primary hover:bg-primary/80 transition-colors"
               >
                 Skapa er lokala pakt!
               </a>

@@ -45,6 +45,18 @@
   font-weight: 800;
 }
 
+.react-pact-map button.segmented-toggle-segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  transition: background-color 0.15s, color 0.15s;
+  border: none;
+  font-family: "Open Sans", Arial, sans-serif;
+}
+
 .react-pact-map button[type="submit"]:hover {
   background-color: #F5642A;
   color: var(--color-on-primary);
@@ -57,6 +69,20 @@
 
 .react-pact-map a:hover {
   color: inherit;
+}
+
+.react-pact-map a.pact-btn-link {
+  color: var(--color-on-primary);
+  display: block;
+  text-align: center;
+  text-transform: none;
+  font-size: inherit;
+  letter-spacing: normal;
+  font-weight: 600;
+}
+
+.react-pact-map a.pact-btn-link:hover {
+  color: var(--color-on-primary);
 }
 
 .map-marker-cluster {
