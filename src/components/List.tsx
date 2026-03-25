@@ -1,6 +1,5 @@
 import type { Pact } from "../types/Pact";
 import ListItem from "./ListItem";
-import Button from "./Button";
 import noFoundImage from "../assets/not-found.avif";
 
 interface ListProps {
@@ -55,9 +54,12 @@ function List({ filteredPacts, heatMetric }: ListProps) {
               </div>
             </div>
             <div className="flex justify-center md:w-1/2 mx-auto">
-              <Button variant="primary" type="button" size="sm" fullWidth>
+              <a
+                href="https://forms.smartphonefreechildhood.se/pakten"
+                className="w-full block text-center px-4 py-1 text-sm rounded-3xl font-semibold bg-primary text-on-primary hover:bg-primary/80 transition-colors"
+              >
                 Skapa er lokala pakt!
-              </Button>
+              </a>
             </div>
           </div>
         )}
