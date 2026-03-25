@@ -21,8 +21,27 @@ function usePacts(): {
         return res.json();
       })
       .then((data: unknown) => {
-        const arr = Array.isArray(data) ? data : [];
-        setPacts(arr as Pact[]);
+        if (!Array.isArray(data)) {
+          setError("Unexpected API response format");
+          setPacts([]);
+          return;
+        }
+        // API returns [{municipality, schools:[{id, school, coordinates, ...}]}]
+        // Flatten into the Pact shape expected by the rest of the app
+        const pacts: Pact[] = (data as any[]).flatMap((muni: any) =>
+          Array.isArray(muni.schools)
+            ? muni.schools.map((school: any): Pact => ({
+                id: school.id,
+                name: school.school,
+                municipality: [muni.municipality],
+                coordinates: school.coordinates,
+                studentCount: school.studentCount ?? 0,
+                parentCount: school.parentCount ?? 0,
+                contact: school.contact,
+              }))
+            : []
+        );
+        setPacts(pacts);
       })
       .catch((err) => {
         setError(err instanceof Error ? err.message : "Failed to load pacts");

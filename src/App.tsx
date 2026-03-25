@@ -2,23 +2,10 @@ import "./App.css";
 import Map from "./components/Map";
 import Button from "./components/Button";
 import usePacts from "./hooks/usePacts";
-import classNames from "classnames";
-import { logInfo } from "./util/log";
 
 function App() {
   const { pacts, loading, error, retry } = usePacts();
-  const isUrlGithub = window.location.hostname.includes("github.io");
-  const isUrlLocalhost = window.location.hostname.includes("localhost");
-
-  logInfo("hostname", window.location.hostname);
-
-  const containerClass = classNames(
-    "react-pact-map w-full max-h-screen bg-background text-on-background overflow-scroll",
-    {
-      "h-screen": isUrlGithub || isUrlLocalhost,
-      "h-full": !isUrlGithub && !isUrlLocalhost,
-    }
-  );
+  const containerClass = "react-pact-map w-full h-full bg-background text-on-background overflow-scroll";
 
   if (loading) {
     return (
