@@ -67,7 +67,7 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
         .bindPopup(
           `<div class="text-sm">
           <div>${pact.name} (${count} ${label(count)})</div><div>
-           <a href="https://forms.smartphonefreechildhood.se/pakten" target="_blank">Gå med</a>
+           <a href="https://ki-ds.org/foraldrapakten/ga-med">Gå med</a>
           </div></div>`
         );
       (marker as any)._pact = pact;
