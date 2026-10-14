@@ -15,36 +15,52 @@ function usePacts(): {
   const fetchPacts = () => {
     setLoading(true);
     setError(null);
+
     fetch(config.pactsApiUrl)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((data: unknown) => {
-        if (!Array.isArray(data)) {
+        if (
+          typeof data !== "object" ||
+          data === null ||
+          !("municipalities" in data) ||
+          !Array.isArray(data.municipalities)
+        ) {
           setError("Unexpected API response format");
           setPacts([]);
           return;
         }
-        // API returns [{municipality, schools:[{id, school, coordinates, ...}]}]
-        // Flatten into the Pact shape expected by the rest of the app
-        const pacts: Pact[] = (data as any[]).flatMap((muni: any) =>
-          Array.isArray(muni.schools)
-            ? muni.schools.map((school: any): Pact => ({
-                id: school.id,
-                name: school.school,
-                municipality: [muni.municipality],
-                coordinates: school.coordinates,
-                studentCount: school.studentCount ?? 0,
-                parentCount: school.parentCount ?? 0,
-                contact: school.contact,
-              }))
-            : []
+
+        // API returns {
+        //   totalCount,
+        //   signupsPastSevenDays,
+        //   municipalities: [{ municipality, schools: [...] }]
+        // }
+        // Flatten municipalities and schools into the Pact shape
+        // expected by the rest of the app.
+        const pacts: Pact[] = data.municipalities.flatMap(
+          (muni: any) =>
+            Array.isArray(muni.schools)
+              ? muni.schools.map((school: any): Pact => ({
+                  id: school.id,
+                  name: school.school,
+                  municipality: [muni.municipality],
+                  coordinates: school.coordinates,
+                  studentCount: school.studentCount ?? 0,
+                  parentCount: school.parentCount ?? 0,
+                  contact: school.contact,
+                }))
+              : []
         );
+
         setPacts(pacts);
       })
       .catch((err) => {
-        setError(err instanceof Error ? err.message : "Failed to load pacts");
+        setError(
+          err instanceof Error ? err.message : "Failed to load pacts"
+        );
         setPacts([]);
       })
       .finally(() => setLoading(false));
