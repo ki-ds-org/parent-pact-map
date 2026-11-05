@@ -31,7 +31,13 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
     if (previousHeatMetricRef.current === heatMetric) return;
 
     previousHeatMetricRef.current = heatMetric;
-    clusterGroupRef.current?.refreshClusters();
+    const clusterGroup = clusterGroupRef.current;
+    clusterGroup?.refreshClusters();
+    clusterGroup?.eachLayer((layer: L.Layer) => {
+      if (layer instanceof L.Marker && layer.isPopupOpen()) {
+        layer.getPopup()?.update();
+      }
+    });
   }, [heatMetric]);
 
   useEffect(() => {
