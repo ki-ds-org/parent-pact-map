@@ -91,7 +91,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
       try {
         const newSuggestions = await fetchSuggestions(
           municipalitySearch,
-          sessionTokenRef.current
+          sessionTokenRef.current ?? undefined
         );
 
         const filteredSuggestions = newSuggestions.filter(

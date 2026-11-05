@@ -1,2 +1,5 @@
 /// <reference types="vite/client" />
-/// <reference path="./types/google-maps.d.ts" />
+
+interface Window {
+  __initGmaps: () => void;
+}

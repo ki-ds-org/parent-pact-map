@@ -1,4 +1,4 @@
-const logInfo = (...args: any[]) => {
+const logInfo = (...args: unknown[]) => {
     console.info("[ParentPactMap | INFO]", ...args);
 };
 

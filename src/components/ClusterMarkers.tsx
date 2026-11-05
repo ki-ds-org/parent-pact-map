@@ -2,38 +2,30 @@ import { useMap } from "react-leaflet";
 import { useEffect } from "react";
 import L from "leaflet";
 import type { Pact } from "../types/Pact";
+import { markerIcon } from "./markerIcon";
 
 interface ClusterMarkersProps {
   coordinates: [Pact, [number, number]][];
   heatMetric: "students" | "parents";
 }
 
-export const markerIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-});
-
 function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
   const map = useMap();
 
   useEffect(() => {
+    const pactsByMarker = new WeakMap<L.Marker, Pact>();
     const markers = L.markerClusterGroup({
-      iconCreateFunction: (cluster: any) => {
-        const childMarkers = cluster.getAllChildMarkers?.() ?? [];
-        let total = childMarkers.reduce((sum: number, m: any) => {
-          const pact = m._pact as Pact | undefined;
+      iconCreateFunction: (cluster) => {
+        const childMarkers = cluster.getAllChildMarkers();
+        let total = childMarkers.reduce((sum, m) => {
+          const pact = pactsByMarker.get(m);
           if (!pact) return sum + 1;
           const count =
             heatMetric === "parents" ? pact.parentCount : pact.studentCount;
           return sum + (count ?? 0);
         }, 0);
         if (total === 0 && childMarkers.length > 0) {
-          total = cluster.getChildCount?.() ?? childMarkers.length;
+          total = cluster.getChildCount();
         }
 
         let color = "#808080";
@@ -70,7 +62,7 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
            <a href="https://ki-ds.org/foraldrapakten/ga-med">Gå med</a>
           </div></div>`
         );
-      (marker as any)._pact = pact;
+      pactsByMarker.set(marker, pact);
       markers.addLayer(marker);
     });
     map.addLayer(markers);
