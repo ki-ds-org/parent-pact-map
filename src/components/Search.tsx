@@ -58,6 +58,12 @@ function Search({ onSearch, apiKey }: SearchProps) {
       };
     }
 
+    if (query !== debouncedQuery) {
+      return () => {
+        active = false;
+      };
+    }
+
     const trimmedQuery = debouncedQuery.trim();
     if (
       trimmedQuery.length < MIN_QUERY_LENGTH ||
@@ -126,7 +132,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
     return () => {
       active = false;
     };
-  }, [debouncedQuery, isFocused, isGoogleMapsLoaded, sessionTokenRef]);
+  }, [query, debouncedQuery, isFocused, isGoogleMapsLoaded, sessionTokenRef]);
 
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
