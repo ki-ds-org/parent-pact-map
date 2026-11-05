@@ -21,7 +21,9 @@ export const markerIcon = new L.Icon({
 function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
   const map = useMap();
   const heatMetricRef = useRef(heatMetric);
-  const clusterGroupRef = useRef<any>(null);
+  const clusterGroupRef = useRef<
+    ReturnType<typeof L.markerClusterGroup> | null
+  >(null);
   const previousHeatMetricRef = useRef(heatMetric);
   heatMetricRef.current = heatMetric;
 
