@@ -26,7 +26,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { geocoderRef, sessionTokenRef } = useGoogleMapsInit(apiKey);
+  const { geocoderRef, sessionTokenRef, isGoogleMapsLoaded } = useGoogleMapsInit(apiKey);
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY);
 
   const suggestionsCache = useRef(new Map<string, Suggestion[]>());
@@ -43,6 +43,13 @@ function Search({ onSearch, apiKey }: SearchProps) {
   };
 
   useEffect(() => {
+    if (!isGoogleMapsLoaded) {
+      setSuggestions([]);
+      setShowDropdown(false);
+      setIsLoading(false);
+      return;
+    }
+
     if (!debouncedQuery || debouncedQuery.trim().length < MIN_QUERY_LENGTH) {
       setSuggestions([]);
       setShowDropdown(false);
@@ -94,7 +101,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
     };
 
     getSuggestions();
-  }, [debouncedQuery, isFocused]);
+  }, [debouncedQuery, isFocused, isGoogleMapsLoaded, sessionTokenRef]);
 
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
@@ -111,7 +118,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!isGoogleMapsLoaded || !query.trim()) return;
 
     const trimmedQuery = query.trim();
 
@@ -146,6 +153,8 @@ function Search({ onSearch, apiKey }: SearchProps) {
   };
 
   const handleSuggestionClick = async (s: Suggestion) => {
+    if (!isGoogleMapsLoaded) return;
+
     const label = s.placePrediction?.text.toString() ?? "";
     setQuery(label);
     setShowDropdown(false);
@@ -190,7 +199,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
           )}
         </div>
 
-        <Button type="submit" variant="primary" disabled={isLoading}>
+        <Button type="submit" variant="primary" disabled={isLoading || !isGoogleMapsLoaded}>
           Sök
         </Button>
       </form>

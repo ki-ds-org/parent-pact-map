@@ -1,13 +1,15 @@
 /// <reference path="../types/google-maps.d.ts" />
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadGoogleMapsJs } from "../util/googleMapsLoader";
 
 export const useGoogleMapsInit = (apiKey?: string) => {
   const geocoderRef = useRef<any>(null);
   const sessionTokenRef = useRef<any>(null);
+  const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    setIsGoogleMapsLoaded(false);
 
     (async () => {
       await loadGoogleMapsJs(apiKey);
@@ -15,6 +17,7 @@ export const useGoogleMapsInit = (apiKey?: string) => {
 
       geocoderRef.current = new google.maps.Geocoder();
       sessionTokenRef.current = new google.maps.places.AutocompleteSessionToken();
+      setIsGoogleMapsLoaded(true);
     })().catch(console.error);
 
     return () => {
@@ -22,5 +25,5 @@ export const useGoogleMapsInit = (apiKey?: string) => {
     };
   }, [apiKey]);
 
-  return { geocoderRef, sessionTokenRef };
+  return { geocoderRef, sessionTokenRef, isGoogleMapsLoaded };
 }; 
