@@ -1,5 +1,5 @@
 import { useMap } from "react-leaflet";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import L from "leaflet";
 import type { Pact } from "../types/Pact";
 
@@ -20,6 +20,25 @@ export const markerIcon = new L.Icon({
 
 function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
   const map = useMap();
+  const heatMetricRef = useRef(heatMetric);
+  const clusterGroupRef = useRef<
+    ReturnType<typeof L.markerClusterGroup> | null
+  >(null);
+  const previousHeatMetricRef = useRef(heatMetric);
+  heatMetricRef.current = heatMetric;
+
+  useEffect(() => {
+    if (previousHeatMetricRef.current === heatMetric) return;
+
+    previousHeatMetricRef.current = heatMetric;
+    const clusterGroup = clusterGroupRef.current;
+    clusterGroup?.refreshClusters();
+    clusterGroup?.eachLayer((layer: L.Layer) => {
+      if (layer instanceof L.Marker && layer.isPopupOpen()) {
+        layer.getPopup()?.update();
+      }
+    });
+  }, [heatMetric]);
 
   useEffect(() => {
     const markers = L.markerClusterGroup({
@@ -29,7 +48,9 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
           const pact = m._pact as Pact | undefined;
           if (!pact) return sum + 1;
           const count =
-            heatMetric === "parents" ? pact.parentCount : pact.studentCount;
+            heatMetricRef.current === "parents"
+              ? pact.parentCount
+              : pact.studentCount;
           return sum + (count ?? 0);
         }, 0);
         if (total === 0 && childMarkers.length > 0) {
@@ -54,30 +75,37 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
       showCoverageOnHover: false,
     });
 
-    const label =
-      heatMetric === "parents"
-        ? (n: number) => (n === 1 ? "förälder" : "föräldrar")
-        : (n: number) => (n === 1 ? "elev" : "elever");
-
     coordinates.forEach(([pact, [lat, lng]]) => {
-      const count =
-        heatMetric === "parents" ? pact.parentCount : pact.studentCount;
       const marker = L.marker([lat, lng])
         .setIcon(markerIcon)
-        .bindPopup(
-          `<div class="text-sm">
-          <div>${pact.name} (${count} ${label(count)})</div><div>
+        .bindPopup(() => {
+          const currentMetric = heatMetricRef.current;
+          const count =
+            currentMetric === "parents" ? pact.parentCount : pact.studentCount;
+          const label =
+            currentMetric === "parents"
+              ? count === 1
+                ? "förälder"
+                : "föräldrar"
+              : count === 1
+                ? "elev"
+                : "elever";
+
+          return `<div class="text-sm">
+          <div>${pact.name} (${count} ${label})</div><div>
            <a href="https://ki-ds.org/foraldrapakten/ga-med">Gå med</a>
-          </div></div>`
-        );
+          </div></div>`;
+        });
       (marker as any)._pact = pact;
       markers.addLayer(marker);
     });
+    clusterGroupRef.current = markers;
     map.addLayer(markers);
     return () => {
       map.removeLayer(markers);
+      clusterGroupRef.current = null;
     };
-  }, [coordinates, map, heatMetric]);
+  }, [coordinates, map]);
 
   return null;
 }

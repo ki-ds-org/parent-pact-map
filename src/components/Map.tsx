@@ -5,7 +5,7 @@ import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet/dist/leaflet.css";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useGeolocation } from "../hooks/useGeolocation";
 import useIsMobileView from "../hooks/useIsMobileView";
 import { useMapData } from "../hooks/useMapData";
@@ -161,8 +161,10 @@ function Map({ pacts }: MapProps) {
   }, [pacts, findClosestPacts, setMapViewWithLayoutDelay]);
 
   // Filter pacts based on visible markers' pactIds
-  const visiblePactIds = new Set(visibleMarkers.map(([pact]) => pact.id));
-  const filteredPacts = mapPacts.filter((pact) => visiblePactIds.has(pact.id));
+  const filteredPacts = useMemo(() => {
+    const visiblePactIds = new Set(visibleMarkers.map(([pact]) => pact.id));
+    return mapPacts.filter((pact) => visiblePactIds.has(pact.id));
+  }, [mapPacts, visibleMarkers]);
 
   return (
     <div className="flex h-full relative">
