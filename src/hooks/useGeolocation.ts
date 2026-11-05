@@ -36,7 +36,7 @@ export function useGeolocation() {
   ): GeolocationResult => {
     const pactsWithDistances = pacts.map((pact) => {
       let minDistance = Infinity;
-      let closestSchool = null;
+      const closestSchool = null;
 
       if (pact.coordinates) {
         const distance = calculateDistance(

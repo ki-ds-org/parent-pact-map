@@ -3,9 +3,9 @@ declare module 'react-leaflet-heatmap-layer' {
 
   interface HeatmapLayerProps {
     points: number[][];
-    longitudeExtractor: (point: any) => number;
-    latitudeExtractor: (point: any) => number;
-    intensityExtractor: (point: any) => number;
+    longitudeExtractor: (point: number[]) => number;
+    latitudeExtractor: (point: number[]) => number;
+    intensityExtractor: (point: number[]) => number;
     radius?: number;
     blur?: number;
     max?: number;
@@ -15,4 +15,4 @@ declare module 'react-leaflet-heatmap-layer' {
   }
 
   export class HeatmapLayer extends Component<HeatmapLayerProps> {}
-} 
+}

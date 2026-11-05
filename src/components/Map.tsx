@@ -16,11 +16,6 @@ import MapContainer from "./MapContainer";
 import MapSidebar from "./MapSidebar";
 import MobileList from "./MobileList";
 
-// Extend Leaflet namespace to include markerClusterGroup
-declare module "leaflet" {
-  function markerClusterGroup(options?: any): any;
-}
-
 interface MapProps {
   pacts: Pact[];
 }

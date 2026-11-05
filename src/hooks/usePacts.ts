@@ -2,6 +2,20 @@ import { useEffect, useState } from "react";
 import { config } from "../config/env";
 import type { Pact } from "../types/Pact";
 
+type ApiSchool = {
+  id: string;
+  school: string;
+  coordinates: [number, number];
+  studentCount?: number;
+  parentCount?: number;
+  contact?: string;
+};
+
+type ApiMunicipality = {
+  municipality: string;
+  schools?: ApiSchool[];
+};
+
 function usePacts(): {
   pacts: Pact[];
   loading: boolean;
@@ -41,9 +55,9 @@ function usePacts(): {
         // Flatten municipalities and schools into the Pact shape
         // expected by the rest of the app.
         const pacts: Pact[] = data.municipalities.flatMap(
-          (muni: any) =>
+          (muni: ApiMunicipality) =>
             Array.isArray(muni.schools)
-              ? muni.schools.map((school: any): Pact => ({
+              ? muni.schools.map((school): Pact => ({
                   id: school.id,
                   name: school.school,
                   municipality: [muni.municipality],

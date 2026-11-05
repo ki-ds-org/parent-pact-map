@@ -1,5 +1,11 @@
-/// <reference path="../types/google-maps.d.ts" />
 import type { Suggestion } from '../types/SearchTypes';
+
+type AddressComponent = {
+  types?: string[];
+  longText?: string | null;
+  shortText?: string | null;
+  long_name?: string;
+};
 
 export interface LocationInfo {
   coordinates: [number, number];
@@ -12,7 +18,9 @@ export interface LocationInfo {
  * @param addressComponents - Array of address components from Google Places API
  * @returns Municipality name or undefined if not found
  */
-export const extractMunicipality = (addressComponents: any[]): string | undefined => {
+export const extractMunicipality = (
+  addressComponents: AddressComponent[] | null | undefined
+): string | undefined => {
   if (!addressComponents || !Array.isArray(addressComponents)) {
     return undefined;
   }
@@ -48,11 +56,11 @@ export const resolveSuggestionToCoords = async (
     fields: ["location", "formattedAddress", "displayName", "addressComponents"],
   });
   
-  const loc: any = place.location;
+  const loc = place.location;
   if (!loc) return null;
-  
-  const lat = typeof loc.lat === "function" ? loc.lat() : loc.lat;
-  const lng = typeof loc.lng === "function" ? loc.lng() : loc.lng;
+
+  const lat = loc.lat();
+  const lng = loc.lng();
   
   // Extract municipality from address components
   const municipality = extractMunicipality(place.addressComponents || []);
@@ -66,14 +74,14 @@ export const resolveSuggestionToCoords = async (
 
 export const geocodeAddress = async (
   address: string,
-  geocoder: any
+  geocoder: google.maps.Geocoder | null
 ): Promise<LocationInfo | null> => {
   if (!geocoder) return null;
 
   return new Promise((resolve) => {
     geocoder.geocode(
       { address, componentRestrictions: { country: "se" } },
-      (results: any, status: any) => {
+      (results, status) => {
         if (status === "OK" && results?.[0]) {
           const result = results[0];
           const loc = result.geometry.location;
