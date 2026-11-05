@@ -23,7 +23,7 @@ function VisibleMarkerTracker({
       const visible = allMarkers.filter(([, [lat, lng]]) =>
         bounds.contains([lat, lng])
       );
-      const visibleNames = visible.map(([pact]) => pact.name).sort();
+      const visibleNames = visible.map(([pact]) => pact.name);
 
       const prevNames = prevVisibleRef.current;
 
