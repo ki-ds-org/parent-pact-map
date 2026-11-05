@@ -43,9 +43,10 @@ This application uses Google Maps API for map functionality and geocoding servic
 
 3. **Security Best Practices:**
    - **Never commit your `.env` file** (it's already in `.gitignore`)
-   - Restrict your API key to specific domains/IPs in Google Cloud Console
-   - For production, use environment variables in your hosting platform
-   - Consider using API key restrictions to limit usage
+   - A `VITE_` API key is included in the public browser bundle; it is not a secret.
+   - Restrict the key with website (HTTP referrer) restrictions to the production site and every site embedding this map.
+   - Restrict the key to only the Google APIs this application uses, and monitor quota and usage in Google Cloud Console.
+   - Do not put server credentials in `VITE_` variables. Use a separate, server-side credential for any private backend integrations.
 
 ### Environment Configuration
 

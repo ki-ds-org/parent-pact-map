@@ -8,7 +8,11 @@ import {
   type LocationInfo,
 } from "../util/searchUtils";
 import { fetchSuggestions } from "../util/suggestionsFetcher";
-import { MIN_QUERY_LENGTH, DEBOUNCE_DELAY } from "../config/searchConfig";
+import {
+  MIN_QUERY_LENGTH,
+  MAX_QUERY_LENGTH,
+  DEBOUNCE_DELAY,
+} from "../config/searchConfig";
 import type { Suggestion } from "../types/SearchTypes";
 import SearchDropdown from "./SearchDropdown";
 
@@ -43,31 +47,44 @@ function Search({ onSearch, apiKey }: SearchProps) {
   };
 
   useEffect(() => {
+    let active = true;
+
     if (!isGoogleMapsLoaded) {
       setSuggestions([]);
       setShowDropdown(false);
       setIsLoading(false);
-      return;
+      return () => {
+        active = false;
+      };
     }
 
-    if (!debouncedQuery || debouncedQuery.trim().length < MIN_QUERY_LENGTH) {
+    const trimmedQuery = debouncedQuery.trim();
+    if (
+      trimmedQuery.length < MIN_QUERY_LENGTH ||
+      trimmedQuery.length > MAX_QUERY_LENGTH
+    ) {
       setSuggestions([]);
       setShowDropdown(false);
-      return;
+      setIsLoading(false);
+      return () => {
+        active = false;
+      };
     }
 
     setIsLoading(true);
 
     const getSuggestions = async () => {
-      const municipalitySearch = debouncedQuery.toLowerCase().includes("kommun")
-        ? debouncedQuery
-        : `${debouncedQuery} kommun`;
+      const municipalitySearch = trimmedQuery.toLowerCase().includes("kommun")
+        ? trimmedQuery
+        : `${trimmedQuery} kommun`;
 
       const cached = suggestionsCache.current.get(municipalitySearch);
       if (cached) {
-        setSuggestions(cached);
-        setShowDropdown(cached.length > 0 && isFocused);
-        setIsLoading(false);
+        if (active) {
+          setSuggestions(cached);
+          setShowDropdown(cached.length > 0 && isFocused);
+          setIsLoading(false);
+        }
         return;
       }
 
@@ -85,6 +102,8 @@ function Search({ onSearch, apiKey }: SearchProps) {
               .includes("kommune")
         );
 
+        if (!active) return;
+
         suggestionsCache.current.set(municipalitySearch, filteredSuggestions);
 
         limitCacheSize(suggestionsCache.current, 20);
@@ -92,15 +111,21 @@ function Search({ onSearch, apiKey }: SearchProps) {
         setSuggestions(filteredSuggestions);
         setShowDropdown(filteredSuggestions.length > 0 && isFocused);
       } catch (err) {
-        console.error("AutocompleteSuggestion error", err);
-        setSuggestions([]);
-        setShowDropdown(false);
+        if (active) {
+          console.error("AutocompleteSuggestion error", err);
+          setSuggestions([]);
+          setShowDropdown(false);
+        }
       } finally {
-        setIsLoading(false);
+        if (active) setIsLoading(false);
       }
     };
 
-    getSuggestions();
+    void getSuggestions();
+
+    return () => {
+      active = false;
+    };
   }, [debouncedQuery, isFocused, isGoogleMapsLoaded, sessionTokenRef]);
 
   useEffect(() => {
@@ -121,6 +146,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
     if (!isGoogleMapsLoaded || !query.trim()) return;
 
     const trimmedQuery = query.trim();
+    if (trimmedQuery.length > MAX_QUERY_LENGTH) return;
 
     const cachedLocation = geocodeCache.current.get(trimmedQuery);
     if (cachedLocation) {
@@ -182,7 +208,8 @@ function Search({ onSearch, apiKey }: SearchProps) {
             type="text"
             placeholder="Sök efter kommun"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            maxLength={MAX_QUERY_LENGTH}
+            onChange={(e) => setQuery(e.target.value.slice(0, MAX_QUERY_LENGTH))}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className="w-full px-4 py-2 text-sm border border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/10 text-white rounded-lg"

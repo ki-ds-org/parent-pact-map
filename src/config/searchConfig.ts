@@ -6,4 +6,6 @@ export const SWEDEN_BOUNDS = {
 } as const;
 
 export const MIN_QUERY_LENGTH = 3;
-export const DEBOUNCE_DELAY = 1000; 
+export const MAX_QUERY_LENGTH = 200;
+export const MAX_AUTOCOMPLETE_QUERY_LENGTH = MAX_QUERY_LENGTH + " kommun".length;
+export const DEBOUNCE_DELAY = 1000;
