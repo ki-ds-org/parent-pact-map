@@ -10,3 +10,9 @@ export type Pact = {
     parentCount: number;
     contact?: string;
   };
+
+export type PactMunicipality = {
+  name: string;
+  coordinates: [number, number];
+  schools: Pact[];
+};

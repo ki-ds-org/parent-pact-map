@@ -10,7 +10,7 @@ import { useGeolocation } from "../hooks/useGeolocation";
 import useIsMobileView from "../hooks/useIsMobileView";
 import { useMapData } from "../hooks/useMapData";
 import "../plugins/BoundaryCanvas";
-import type { Pact } from "../types/Pact";
+import type { Pact, PactMunicipality } from "../types/Pact";
 import type { LocationInfo } from "../util/searchUtils";
 import MapContainer from "./MapContainer";
 import MapSidebar from "./MapSidebar";
@@ -23,9 +23,10 @@ declare module "leaflet" {
 
 interface MapProps {
   pacts: Pact[];
+  municipalities: PactMunicipality[];
 }
 
-function Map({ pacts }: MapProps) {
+function Map({ pacts, municipalities }: MapProps) {
   const [mapRef, setMapRef] = useState<L.Map | null>(null);
   const [visibleMarkers, setVisibleMarkers] = useState<
     [Pact, [number, number]][]
@@ -74,36 +75,7 @@ function Map({ pacts }: MapProps) {
   );
 
   const handleSearch = (locationInfo: LocationInfo) => {
-    // Find the closest pact to the searched location
-    const { pacts: closestPacts } = findClosestPacts(
-      mapPacts,
-      locationInfo.coordinates[0],
-      locationInfo.coordinates[1],
-      1, // Only get the closest one
-      50 // Within 50km of the search location
-    );
-
-    // Check if the closest pact's municipality matches the search query
-    let targetCoords = locationInfo.coordinates;
-    
-    if (closestPacts.length > 0) {
-      const closestPact = closestPacts[0];
-      const searchMunicipality = locationInfo.municipality?.toLowerCase() || '';
-      
-      // Handle municipality as either string or array
-      const pactMunicipality = Array.isArray(closestPact.municipality) 
-        ? closestPact.municipality[0]?.toLowerCase() || ''
-        : (closestPact.municipality as unknown as string)?.toLowerCase() || '';
-      
-      // Only snap to pact coordinates if municipality names match
-      if (searchMunicipality && pactMunicipality && 
-          (pactMunicipality.includes(searchMunicipality) || 
-           searchMunicipality.includes(pactMunicipality))) {
-        targetCoords = closestPact.coordinates;
-      }
-    }
-
-    setMapViewWithLayoutDelay(targetCoords, () => {
+    setMapViewWithLayoutDelay(locationInfo.coordinates, () => {
       setSearchQuery(locationInfo.coordinates);
       setCurrentLocationInfo(locationInfo);
       setClosestPacts([]);
@@ -173,6 +145,7 @@ function Map({ pacts }: MapProps) {
           searchQuery={searchQuery}
           zooming={zooming}
           closestPacts={closestPacts}
+          municipalities={municipalities}
           filteredPacts={filteredPacts}
           currentLocationInfo={currentLocationInfo}
           heatMetric={heatMetric}
