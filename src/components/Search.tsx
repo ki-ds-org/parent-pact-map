@@ -13,18 +13,26 @@ interface SearchProps {
 function normalize(value: string) {
   return value
     .toLocaleLowerCase("sv")
-    .replace(/s stad\b/gu, "")
-    .replace(/\b(kommun(en)?|stad)\b/gu, "")
+    .replace(/(?<![\p{L}\p{N}])(?:kommunen|kommun|stad)(?![\p{L}\p{N}])/gu, "")
     .replace(/[^\p{L}\p{N}]/gu, "");
 }
 
-function municipalityMatches(first: string, second: string) {
+function municipalityNamesMatch(first: string, second: string) {
   const normalizedFirst = normalize(first);
   const normalizedSecond = normalize(second);
   return (
     normalizedFirst === normalizedSecond ||
     normalizedFirst === `${normalizedSecond}s` ||
     normalizedSecond === `${normalizedFirst}s`
+  );
+}
+
+function municipalityMatchesQuery(name: string, query: string) {
+  const normalizedName = normalize(name);
+  const normalizedQuery = normalize(query);
+  return (
+    normalizedName.includes(normalizedQuery) ||
+    municipalityNamesMatch(name, query)
   );
 }
 
@@ -38,14 +46,15 @@ function Search({ onSearch, municipalities }: SearchProps) {
 
     const options: SearchOption[] = [];
     for (const municipality of municipalities) {
-      const municipalityMatchesQuery = normalize(municipality.name).includes(
+      const matchesMunicipality = municipalityMatchesQuery(
+        municipality.name,
         normalizedQuery
       );
       const matchingSchools = municipality.schools.filter((school) =>
         normalize(school.name).includes(normalizedQuery)
       );
 
-      if (municipalityMatchesQuery) {
+      if (matchesMunicipality) {
         options.push({ kind: "municipality", municipality });
         options.push(
           ...municipality.schools.map((pact) => ({
@@ -71,7 +80,7 @@ function Search({ onSearch, municipalities }: SearchProps) {
       option.kind === "municipality"
         ? option.municipality
         : municipalities.find((item) =>
-            municipalityMatches(item.name, option.pact.municipality[0] ?? "")
+            municipalityNamesMatch(item.name, option.pact.municipality[0] ?? "")
           );
     const coordinates =
       option.kind === "municipality"
@@ -102,7 +111,7 @@ function Search({ onSearch, municipalities }: SearchProps) {
     const normalized = normalize(query.trim());
     const exactMatch = suggestions.find((option) =>
       option.kind === "municipality"
-        ? normalize(option.municipality.name) === normalized
+        ? municipalityNamesMatch(option.municipality.name, query.trim())
         : normalize(option.pact.name) === normalized
     );
     if (exactMatch) selectOption(exactMatch);
