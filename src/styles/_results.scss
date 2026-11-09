@@ -1,0 +1,137 @@
+@use "./tokens" as *;
+
+.c-search-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: $color-background-secondary;
+
+  &__title {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  &__description {
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+}
+
+.c-results {
+  width: 100%;
+
+  &__items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__empty {
+    padding: 0.5rem 1rem;
+    text-align: center;
+  }
+
+  &__empty-content {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__empty-image-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__empty-image {
+    width: 3.5rem;
+    height: auto;
+  }
+
+  &__empty-copy {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  &__empty-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  &__empty-description {
+    font-size: 0.875rem;
+    font-weight: 300;
+  }
+
+  &__empty-action {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  &__create-link {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    border-radius: 999px;
+    color: $color-on-primary;
+    background: $color-primary;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color 0.15s;
+
+    &:hover {
+      color: $color-on-primary;
+      background: $color-primary-hover;
+    }
+  }
+}
+
+.c-result {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+
+  &__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  &__title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+
+  &__body {
+    flex: 1;
+  }
+
+  &__description {
+    display: flex;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+  }
+}
+
+.c-mobile-results {
+  width: 100%;
+  border: 1px solid $color-primary;
+  border-radius: 0 0 0.5rem 0.5rem;
+  pointer-events: auto;
+}
