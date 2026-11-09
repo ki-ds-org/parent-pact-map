@@ -17,9 +17,7 @@ interface MapSidebarProps {
   filteredPacts: Pact[];
   currentLocationInfo?: LocationInfo;
   geolocationMessage: string;
-  heatMetric: "students" | "parents";
   aggregation: "school" | "municipality";
-  onHeatMetricChange: (metric: "students" | "parents") => void;
   onAggregationChange: (mode: "school" | "municipality") => void;
 }
 
@@ -32,9 +30,7 @@ export default function MapSidebar({
   filteredPacts,
   currentLocationInfo,
   geolocationMessage,
-  heatMetric,
   aggregation,
-  onHeatMetricChange,
   onAggregationChange,
 }: MapSidebarProps) {
   const searchInfoDescription =
@@ -72,12 +68,6 @@ export default function MapSidebar({
               </Pill>
             </button>
             <SegmentedToggle
-              options={["students", "parents"]}
-              value={heatMetric}
-              onChange={onHeatMetricChange}
-              labels={["Elever", "Föräldrar"]}
-            />
-            <SegmentedToggle
               options={["school", "municipality"]}
               value={aggregation}
               onChange={onAggregationChange}
@@ -109,7 +99,6 @@ export default function MapSidebar({
             filteredPacts={
               closestPacts.length > 0 ? closestPacts : filteredPacts
             }
-            heatMetric={heatMetric}
           />
         ) : null}
       </div>

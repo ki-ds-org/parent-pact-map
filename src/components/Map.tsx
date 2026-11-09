@@ -37,9 +37,6 @@ function Map({ pacts }: MapProps) {
     LocationInfo | undefined
   >();
   const [isProgrammaticZoom, setIsProgrammaticZoom] = useState(false);
-  const [heatMetric, setHeatMetric] = useState<"students" | "parents">(
-    "students"
-  );
   const [aggregation, setAggregation] = useState<"school" | "municipality">(
     "school"
   );
@@ -47,7 +44,6 @@ function Map({ pacts }: MapProps) {
 
   const isMobile = useIsMobileView();
   const { heatPoints, markerPoints, pacts: mapPacts } = useMapData(pacts, {
-    heatMetric,
     aggregation,
   });
   const { findClosestPacts } = useGeolocation();
@@ -201,9 +197,7 @@ function Map({ pacts }: MapProps) {
           filteredPacts={filteredPacts}
           currentLocationInfo={currentLocationInfo}
           geolocationMessage={geolocationMessage}
-          heatMetric={heatMetric}
           aggregation={aggregation}
-          onHeatMetricChange={setHeatMetric}
           onAggregationChange={setAggregation}
         />
 
@@ -211,7 +205,6 @@ function Map({ pacts }: MapProps) {
           <MapContainer
             heatPoints={heatPoints}
             markerPoints={markerPoints}
-            heatMetric={heatMetric}
             onVisibleChange={setVisibleMarkers}
             onZoomStart={handleZooming}
             onMapRef={setMapRef}
@@ -224,7 +217,6 @@ function Map({ pacts }: MapProps) {
           zooming={zooming}
           closestPacts={closestPacts}
           filteredPacts={filteredPacts}
-          heatMetric={heatMetric}
         />
       </div>
     </div>
