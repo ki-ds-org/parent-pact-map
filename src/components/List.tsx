@@ -1,6 +1,7 @@
 import type { Pact } from "../types/Pact";
 import ListItem from "./ListItem";
 import noFoundImage from "../assets/not-found.avif";
+import { getJoinUrl } from "../util/joinUrl";
 
 interface ListProps {
   filteredPacts: Pact[];
@@ -28,7 +29,7 @@ function List({ filteredPacts, heatMetric }: ListProps) {
                 key={`${pact.id}-${i}`}
                 title={`${pact.name}`}
                 description={`${count} ${label}`}
-                link="https://ki-ds.org/foraldrapakten/ga-med"
+                link={getJoinUrl(pact)}
                 callToAction="Gå med"
               />
             );
