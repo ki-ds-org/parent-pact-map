@@ -6,7 +6,7 @@ import Pill from "./Pill";
 import Search from "./Search";
 import SearchInfo from "./SearchInfo";
 import SegmentedToggle from "./SegmentedToggle";
-import { config } from "../config/env";
+import type { PactMunicipality } from "../types/Pact";
 
 interface MapSidebarProps {
   onSearch: (locationInfo: LocationInfo) => void;
@@ -14,6 +14,7 @@ interface MapSidebarProps {
   searchQuery: [number, number] | null;
   zooming: boolean;
   closestPacts: Pact[];
+  municipalities: PactMunicipality[];
   filteredPacts: Pact[];
   currentLocationInfo?: LocationInfo;
   heatMetric: "students" | "parents";
@@ -28,6 +29,7 @@ export default function MapSidebar({
   searchQuery,
   zooming,
   closestPacts,
+  municipalities,
   filteredPacts,
   currentLocationInfo,
   heatMetric,
@@ -55,7 +57,10 @@ export default function MapSidebar({
       </div>
       <div>
         <div className="w-full flex-1 md:flex-none flex flex-col md:p-2">
-          <Search onSearch={onSearch} apiKey={config.googleApiKey!} />
+          <Search
+            onSearch={onSearch}
+            municipalities={municipalities}
+          />
           <div className="flex flex-wrap items-center justify-end gap-3 py-2 text-xs text-on-background pointer-events-auto">
             <button className="hover:bg-transparent" onClick={onFindClosest}>
               <Pill>

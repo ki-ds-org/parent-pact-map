@@ -4,7 +4,7 @@ import Button from "./components/Button";
 import usePacts from "./hooks/usePacts";
 
 function App() {
-  const { pacts, loading, error, retry } = usePacts();
+  const { pacts, municipalities, loading, error, retry } = usePacts();
   const containerClass = "react-pact-map w-full h-full bg-background text-on-background overflow-scroll";
 
   if (loading) {
@@ -30,7 +30,7 @@ function App() {
 
   return (
     <div className={containerClass}>
-      <Map pacts={pacts} />
+      <Map pacts={pacts} municipalities={municipalities} />
     </div>
   );
 }

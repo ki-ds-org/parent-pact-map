@@ -1,205 +1,136 @@
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useState } from "react";
+import type { PactMunicipality } from "../types/Pact";
+import type { SearchOption } from "../types/SearchTypes";
+import type { LocationInfo } from "../util/searchUtils";
 import Button from "./Button";
-import { useDebounce } from "../hooks/useDebounce";
-import { useGoogleMapsInit } from "../hooks/useGoogleMapsInit";
-import {
-  resolveSuggestionToCoords,
-  geocodeAddress,
-  type LocationInfo,
-} from "../util/searchUtils";
-import { fetchSuggestions } from "../util/suggestionsFetcher";
-import { MIN_QUERY_LENGTH, DEBOUNCE_DELAY } from "../config/searchConfig";
-import type { Suggestion } from "../types/SearchTypes";
 import SearchDropdown from "./SearchDropdown";
 
 interface SearchProps {
   onSearch: (locationInfo: LocationInfo) => void;
-  apiKey?: string;
+  municipalities: PactMunicipality[];
 }
 
-function Search({ onSearch, apiKey }: SearchProps) {
+function normalize(value: string) {
+  return value
+    .toLocaleLowerCase("sv")
+    .replace(/s stad\b/gu, "")
+    .replace(/\b(kommun(en)?|stad)\b/gu, "")
+    .replace(/[^\p{L}\p{N}]/gu, "");
+}
+
+function municipalityMatches(first: string, second: string) {
+  const normalizedFirst = normalize(first);
+  const normalizedSecond = normalize(second);
+  return (
+    normalizedFirst === normalizedSecond ||
+    normalizedFirst === `${normalizedSecond}s` ||
+    normalizedSecond === `${normalizedFirst}s`
+  );
+}
+
+function Search({ onSearch, municipalities }: SearchProps) {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const normalizedQuery = normalize(query.trim());
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { geocoderRef, sessionTokenRef, isGoogleMapsLoaded } = useGoogleMapsInit(apiKey);
-  const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY);
+  const suggestions = useMemo((): SearchOption[] => {
+    if (normalizedQuery.length < 2) return [];
 
-  const suggestionsCache = useRef(new Map<string, Suggestion[]>());
+    const options: SearchOption[] = [];
+    for (const municipality of municipalities) {
+      const municipalityMatchesQuery = normalize(municipality.name).includes(
+        normalizedQuery
+      );
+      const matchingSchools = municipality.schools.filter((school) =>
+        normalize(school.name).includes(normalizedQuery)
+      );
 
-  const geocodeCache = useRef(new Map<string, LocationInfo>());
-
-  const limitCacheSize = <K, V>(cache: Map<K, V>, maxSize: number) => {
-    if (cache.size > maxSize) {
-      const firstKey = cache.keys().next().value;
-      if (firstKey) {
-        cache.delete(firstKey);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (!isGoogleMapsLoaded) {
-      setSuggestions([]);
-      setShowDropdown(false);
-      setIsLoading(false);
-      return;
-    }
-
-    if (!debouncedQuery || debouncedQuery.trim().length < MIN_QUERY_LENGTH) {
-      setSuggestions([]);
-      setShowDropdown(false);
-      return;
-    }
-
-    setIsLoading(true);
-
-    const getSuggestions = async () => {
-      const municipalitySearch = debouncedQuery.toLowerCase().includes("kommun")
-        ? debouncedQuery
-        : `${debouncedQuery} kommun`;
-
-      const cached = suggestionsCache.current.get(municipalitySearch);
-      if (cached) {
-        setSuggestions(cached);
-        setShowDropdown(cached.length > 0 && isFocused);
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const newSuggestions = await fetchSuggestions(
-          municipalitySearch,
-          sessionTokenRef.current
+      if (municipalityMatchesQuery) {
+        options.push({ kind: "municipality", municipality });
+        options.push(
+          ...municipality.schools.map((pact) => ({
+            kind: "school" as const,
+            pact,
+          }))
         );
-
-        const filteredSuggestions = newSuggestions.filter(
-          (s) =>
-            !s.placePrediction?.text
-              .toString()
-              .toLowerCase()
-              .includes("kommune")
+      } else {
+        options.push(
+          ...matchingSchools.map((pact) => ({
+            kind: "school" as const,
+            pact,
+          }))
         );
-
-        suggestionsCache.current.set(municipalitySearch, filteredSuggestions);
-
-        limitCacheSize(suggestionsCache.current, 20);
-
-        setSuggestions(filteredSuggestions);
-        setShowDropdown(filteredSuggestions.length > 0 && isFocused);
-      } catch (err) {
-        console.error("AutocompleteSuggestion error", err);
-        setSuggestions([]);
-        setShowDropdown(false);
-      } finally {
-        setIsLoading(false);
       }
-    };
-
-    getSuggestions();
-  }, [debouncedQuery, isFocused, isGoogleMapsLoaded, sessionTokenRef]);
-
-  useEffect(() => {
-    const onDocClick = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setShowDropdown(false);
-      }
-    };
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, []);
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isGoogleMapsLoaded || !query.trim()) return;
-
-    const trimmedQuery = query.trim();
-
-    const cachedLocation = geocodeCache.current.get(trimmedQuery);
-    if (cachedLocation) {
-      onSearch(cachedLocation);
-      setShowDropdown(false);
-      sessionTokenRef.current =
-        new google.maps.places.AutocompleteSessionToken();
-      return;
     }
 
-    setIsLoading(true);
-    const locationInfo = await geocodeAddress(
-      trimmedQuery,
-      geocoderRef.current
+    return options;
+  }, [municipalities, normalizedQuery]);
+
+  const selectOption = (option: SearchOption) => {
+    const municipality =
+      option.kind === "municipality"
+        ? option.municipality
+        : municipalities.find((item) =>
+            municipalityMatches(item.name, option.pact.municipality[0] ?? "")
+          );
+    const coordinates =
+      option.kind === "municipality"
+        ? option.municipality.coordinates
+        : option.pact.coordinates;
+
+    onSearch({
+      coordinates,
+      municipality:
+        option.kind === "municipality"
+          ? option.municipality.name
+          : (municipality?.name ?? option.pact.municipality[0]),
+      formattedAddress:
+        option.kind === "municipality"
+          ? option.municipality.name
+          : option.pact.name,
+    });
+    setQuery(
+      option.kind === "municipality"
+        ? option.municipality.name
+        : option.pact.name
     );
-    setIsLoading(false);
-
-    if (locationInfo) {
-      geocodeCache.current.set(trimmedQuery, locationInfo);
-
-      limitCacheSize(geocodeCache.current, 10);
-
-      onSearch(locationInfo);
-      setShowDropdown(false);
-      sessionTokenRef.current =
-        new google.maps.places.AutocompleteSessionToken();
-    } else {
-      console.warn("Location not found in Sweden");
-    }
+    setIsFocused(false);
   };
 
-  const handleSuggestionClick = async (s: Suggestion) => {
-    if (!isGoogleMapsLoaded) return;
-
-    const label = s.placePrediction?.text.toString() ?? "";
-    setQuery(label);
-    setShowDropdown(false);
-    setIsFocused(false);
-    inputRef.current?.blur();
-    setIsLoading(true);
-    const locationInfo = await resolveSuggestionToCoords(s);
-    setIsLoading(false);
-
-    if (locationInfo) {
-      onSearch(locationInfo);
-      sessionTokenRef.current =
-        new google.maps.places.AutocompleteSessionToken();
-    } else {
-      console.warn("Could not get coordinates for this location");
-    }
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const normalized = normalize(query.trim());
+    const exactMatch = suggestions.find((option) =>
+      option.kind === "municipality"
+        ? normalize(option.municipality.name) === normalized
+        : normalize(option.pact.name) === normalized
+    );
+    if (exactMatch) selectOption(exactMatch);
   };
 
   return (
-    <div ref={dropdownRef} className="relative z-50 w-full pointer-events-auto">
-      <form onSubmit={handleSearch} className="flex flex-row gap-2">
+    <div className="relative z-50 w-full pointer-events-auto">
+      <form onSubmit={handleSubmit} className="flex flex-row gap-2">
         <div className="relative flex-1 w-80">
           <input
-            ref={inputRef}
             type="text"
             placeholder="Sök efter kommun"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(event) => setQuery(event.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className="w-full px-4 py-2 text-sm border border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/10 text-white rounded-lg"
           />
-
-          {showDropdown && (
+          {isFocused && normalizedQuery.length >= 2 && (
             <div className="absolute top-full left-0 right-0 bg-background border border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto z-50">
               <SearchDropdown
-                isLoading={isLoading}
                 suggestions={suggestions}
-                onSuggestionClick={handleSuggestionClick}
+                onSuggestionClick={selectOption}
               />
             </div>
           )}
         </div>
-
-        <Button type="submit" variant="primary" disabled={isLoading || !isGoogleMapsLoaded}>
+        <Button type="submit" variant="primary" disabled={!query.trim()}>
           Sök
         </Button>
       </form>
