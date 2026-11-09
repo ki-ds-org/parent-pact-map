@@ -47,6 +47,7 @@ function usePacts(): {
                   id: school.id,
                   name: school.school,
                   municipality: [muni.municipality],
+                  school: school.school,
                   coordinates: school.coordinates,
                   studentCount: school.studentCount ?? 0,
                   parentCount: school.parentCount ?? 0,
