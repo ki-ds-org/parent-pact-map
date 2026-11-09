@@ -116,7 +116,11 @@ function Search({ onSearch, municipalities }: SearchProps) {
             type="text"
             placeholder="Sök efter kommun"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setIsFocused(true);
+            }}
+            onClick={() => setIsFocused(true)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className="w-full px-4 py-2 text-sm border border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/10 text-white rounded-lg"
