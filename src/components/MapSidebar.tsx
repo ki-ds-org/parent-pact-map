@@ -10,6 +10,7 @@ import { config } from "../config/env";
 
 interface MapSidebarProps {
   onSearch: (locationInfo: LocationInfo) => void;
+  onClearSearch: () => void;
   onFindClosest: () => void;
   searchQuery: [number, number] | null;
   zooming: boolean;
@@ -23,6 +24,7 @@ interface MapSidebarProps {
 
 export default function MapSidebar({
   onSearch,
+  onClearSearch,
   onFindClosest,
   searchQuery,
   zooming,
@@ -61,7 +63,11 @@ export default function MapSidebar({
       </div>
       <div>
         <div className="w-full flex-1 md:flex-none flex flex-col md:p-2">
-          <Search onSearch={onSearch} apiKey={config.googleApiKey!} />
+          <Search
+            onSearch={onSearch}
+            onClear={onClearSearch}
+            apiKey={config.googleApiKey!}
+          />
           <div className="flex flex-wrap items-center justify-end gap-3 py-2 text-xs text-on-background pointer-events-auto">
             <button
               type="button"

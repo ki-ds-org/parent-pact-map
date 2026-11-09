@@ -14,10 +14,11 @@ import SearchDropdown from "./SearchDropdown";
 
 interface SearchProps {
   onSearch: (locationInfo: LocationInfo) => void;
+  onClear: () => void;
   apiKey?: string;
 }
 
-function Search({ onSearch, apiKey }: SearchProps) {
+function Search({ onSearch, onClear, apiKey }: SearchProps) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -191,6 +192,15 @@ function Search({ onSearch, apiKey }: SearchProps) {
     }
   };
 
+  const handleClear = () => {
+    setQuery("");
+    setSuggestions([]);
+    setShowDropdown(false);
+    setActiveIndex(-1);
+    setSearchMessage("");
+    onClear();
+  };
+
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown" && suggestions.length > 0) {
       event.preventDefault();
@@ -266,6 +276,15 @@ function Search({ onSearch, apiKey }: SearchProps) {
         >
           Sök
         </Button>
+        {query && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="shrink-0 rounded-lg px-3 py-2 text-sm underline"
+          >
+            Rensa sökning
+          </button>
+        )}
       </form>
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {isLoading ? "Söker..." : searchMessage}
