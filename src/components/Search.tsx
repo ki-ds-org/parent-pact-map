@@ -233,10 +233,14 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
           </label>
           <input
             id="municipality-search"
-            type="text"
+            type="search"
             placeholder="Sök efter kommun"
             value={query}
             onChange={(e) => {
+              if (!e.target.value) {
+                handleClear();
+                return;
+              }
               setQuery(e.target.value);
               setSearchMessage("");
               setActiveIndex(-1);
@@ -276,15 +280,6 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
         >
           Sök
         </Button>
-        {query && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="shrink-0 rounded-lg px-3 py-2 text-sm underline"
-          >
-            Rensa sökning
-          </button>
-        )}
       </form>
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {isLoading ? "Söker..." : searchMessage}
