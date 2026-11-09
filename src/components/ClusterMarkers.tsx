@@ -2,6 +2,7 @@ import { useMap } from "react-leaflet";
 import { useEffect } from "react";
 import L from "leaflet";
 import type { Pact } from "../types/Pact";
+import { getJoinUrl } from "../util/joinUrl";
 
 interface ClusterMarkersProps {
   coordinates: [Pact, [number, number]][];
@@ -33,7 +34,7 @@ function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
           total = cluster.getChildCount?.() ?? childMarkers.length;
         }
 
-        let color = "#808080";
+        let color = "#757575";
         if (total >= 50) {
           color = "#5e5e5e";
         } else if (total >= 20) {
@@ -52,18 +53,25 @@ function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
     });
 
     coordinates.forEach(([pact, [lat, lng]]) => {
-      const marker = L.marker([lat, lng])
-        .setIcon(markerIcon)
-        .bindPopup(
-          `<div class="text-sm">
-          <div>${pact.name} (${pact.parentCount} ${
-            pact.parentCount === 1 ? "förälder" : "föräldrar"
-          }, ${pact.studentCount} ${
-            pact.studentCount === 1 ? "elev" : "elever"
-          })</div><div>
-           <a href="https://ki-ds.org/foraldrapakten/ga-med">Gå med</a>
-          </div></div>`
-        );
+      const marker = L.marker([lat, lng], {
+        title: `${pact.name}: ${pact.parentCount} ${
+          pact.parentCount === 1 ? "förälder" : "föräldrar"
+        }, ${pact.studentCount} ${pact.studentCount === 1 ? "elev" : "elever"}`,
+        alt: `${pact.name}: ${pact.parentCount} ${
+          pact.parentCount === 1 ? "förälder" : "föräldrar"
+        }, ${pact.studentCount} ${pact.studentCount === 1 ? "elev" : "elever"}`,
+      }).setIcon(markerIcon);
+      const popup = document.createElement("div");
+      popup.className = "text-sm";
+      const description = document.createElement("p");
+      description.textContent = `${pact.name} (${pact.parentCount} ${
+        pact.parentCount === 1 ? "förälder" : "föräldrar"
+      }, ${pact.studentCount} ${pact.studentCount === 1 ? "elev" : "elever"})`;
+      const link = document.createElement("a");
+      link.href = getJoinUrl(pact);
+      link.textContent = "Gå med";
+      popup.append(description, link);
+      marker.bindPopup(popup);
       (marker as any)._pact = pact;
       markers.addLayer(marker);
     });

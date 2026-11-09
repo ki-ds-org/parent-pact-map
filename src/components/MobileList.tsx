@@ -36,7 +36,7 @@ export default function MobileList({
       : `Visar alla ${filteredPacts.length} pakter i Sverige. Sök efter kommun för att hitta pakter nära dig.`;
 
   return (
-    <div className={listClass}>
+    <section className={listClass} aria-label="Sökresultat">
       <SearchInfo
         title="Sökresultat"
         description={filteredPacts.length > 0 ? searchInfoDescription : ""}
@@ -47,6 +47,6 @@ export default function MobileList({
           filteredPacts={closestPacts.length > 0 ? closestPacts : filteredPacts}
         />
       ) : null}
-    </div>
+    </section>
   );
 }

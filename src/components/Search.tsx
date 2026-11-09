@@ -23,9 +23,10 @@ function Search({ onSearch, apiKey }: SearchProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [searchMessage, setSearchMessage] = useState("");
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const { geocoderRef, sessionTokenRef, isGoogleMapsLoaded } = useGoogleMapsInit(apiKey);
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY);
 
@@ -53,10 +54,12 @@ function Search({ onSearch, apiKey }: SearchProps) {
     if (!debouncedQuery || debouncedQuery.trim().length < MIN_QUERY_LENGTH) {
       setSuggestions([]);
       setShowDropdown(false);
+      setActiveIndex(-1);
       return;
     }
 
     setIsLoading(true);
+    setShowDropdown(false);
 
     const getSuggestions = async () => {
       const municipalitySearch = debouncedQuery.toLowerCase().includes("kommun")
@@ -67,6 +70,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
       if (cached) {
         setSuggestions(cached);
         setShowDropdown(cached.length > 0 && isFocused);
+        setActiveIndex(-1);
         setIsLoading(false);
         return;
       }
@@ -91,10 +95,12 @@ function Search({ onSearch, apiKey }: SearchProps) {
 
         setSuggestions(filteredSuggestions);
         setShowDropdown(filteredSuggestions.length > 0 && isFocused);
+        setActiveIndex(-1);
       } catch (err) {
         console.error("AutocompleteSuggestion error", err);
         setSuggestions([]);
         setShowDropdown(false);
+        setSearchMessage("Förslagen kunde inte hämtas. Försök igen.");
       } finally {
         setIsLoading(false);
       }
@@ -121,6 +127,7 @@ function Search({ onSearch, apiKey }: SearchProps) {
     if (!isGoogleMapsLoaded || !query.trim()) return;
 
     const trimmedQuery = query.trim();
+    setSearchMessage("");
 
     const cachedLocation = geocodeCache.current.get(trimmedQuery);
     if (cachedLocation) {
@@ -132,23 +139,28 @@ function Search({ onSearch, apiKey }: SearchProps) {
     }
 
     setIsLoading(true);
-    const locationInfo = await geocodeAddress(
-      trimmedQuery,
-      geocoderRef.current
-    );
-    setIsLoading(false);
+    try {
+      const locationInfo = await geocodeAddress(
+        trimmedQuery,
+        geocoderRef.current
+      );
 
-    if (locationInfo) {
-      geocodeCache.current.set(trimmedQuery, locationInfo);
-
-      limitCacheSize(geocodeCache.current, 10);
-
-      onSearch(locationInfo);
-      setShowDropdown(false);
-      sessionTokenRef.current =
-        new google.maps.places.AutocompleteSessionToken();
-    } else {
-      console.warn("Location not found in Sweden");
+      if (locationInfo) {
+        geocodeCache.current.set(trimmedQuery, locationInfo);
+        limitCacheSize(geocodeCache.current, 10);
+        onSearch(locationInfo);
+        setShowDropdown(false);
+        sessionTokenRef.current =
+          new google.maps.places.AutocompleteSessionToken();
+        setSearchMessage(`Visar resultat för ${trimmedQuery}.`);
+      } else {
+        setSearchMessage("Hittade ingen plats i Sverige. Kontrollera sökningen.");
+      }
+    } catch (err) {
+      console.error("Geocoding error", err);
+      setSearchMessage("Sökningen misslyckades. Försök igen.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -159,38 +171,86 @@ function Search({ onSearch, apiKey }: SearchProps) {
     setQuery(label);
     setShowDropdown(false);
     setIsFocused(false);
-    inputRef.current?.blur();
+    setSearchMessage("");
     setIsLoading(true);
-    const locationInfo = await resolveSuggestionToCoords(s);
-    setIsLoading(false);
+    try {
+      const locationInfo = await resolveSuggestionToCoords(s);
+      if (locationInfo) {
+        onSearch(locationInfo);
+        sessionTokenRef.current =
+          new google.maps.places.AutocompleteSessionToken();
+        setSearchMessage(`Visar resultat för ${label}.`);
+      } else {
+        setSearchMessage("Kunde inte hitta den valda platsen. Försök igen.");
+      }
+    } catch (err) {
+      console.error("Place lookup error", err);
+      setSearchMessage("Sökningen misslyckades. Försök igen.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    if (locationInfo) {
-      onSearch(locationInfo);
-      sessionTokenRef.current =
-        new google.maps.places.AutocompleteSessionToken();
-    } else {
-      console.warn("Could not get coordinates for this location");
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "ArrowDown" && suggestions.length > 0) {
+      event.preventDefault();
+      setShowDropdown(true);
+      setActiveIndex((index) => (index + 1) % suggestions.length);
+    } else if (event.key === "ArrowUp" && suggestions.length > 0) {
+      event.preventDefault();
+      setActiveIndex((index) =>
+        index <= 0 ? suggestions.length - 1 : index - 1
+      );
+    } else if (event.key === "Enter" && activeIndex >= 0) {
+      event.preventDefault();
+      void handleSuggestionClick(suggestions[activeIndex]);
+    } else if (event.key === "Escape") {
+      setShowDropdown(false);
+      setActiveIndex(-1);
     }
   };
 
   return (
     <div ref={dropdownRef} className="relative z-50 w-full pointer-events-auto">
-      <form onSubmit={handleSearch} className="flex flex-row gap-2">
+      <form
+        onSubmit={handleSearch}
+        className="flex flex-row gap-2"
+        aria-label="Sök efter kommun"
+      >
         <div className="relative flex-1 w-80">
+          <label htmlFor="municipality-search" className="sr-only">
+            Sök efter kommun
+          </label>
           <input
-            ref={inputRef}
+            id="municipality-search"
             type="text"
             placeholder="Sök efter kommun"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setSearchMessage("");
+              setActiveIndex(-1);
+              setShowDropdown(false);
+            }}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
+            onKeyDown={handleInputKeyDown}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={showDropdown}
+            aria-controls={
+              showDropdown ? "municipality-suggestions" : undefined
+            }
+            aria-activedescendant={
+              activeIndex >= 0 ? `municipality-option-${activeIndex}` : undefined
+            }
             className="w-full px-4 py-2 text-sm border border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/10 text-white rounded-lg"
           />
 
           {showDropdown && (
             <div className="absolute top-full left-0 right-0 bg-background border border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto z-50">
               <SearchDropdown
+                activeIndex={activeIndex}
                 isLoading={isLoading}
                 suggestions={suggestions}
                 onSuggestionClick={handleSuggestionClick}
@@ -199,10 +259,17 @@ function Search({ onSearch, apiKey }: SearchProps) {
           )}
         </div>
 
-        <Button type="submit" variant="primary" disabled={isLoading || !isGoogleMapsLoaded}>
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={isLoading || !isGoogleMapsLoaded}
+        >
           Sök
         </Button>
       </form>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {isLoading ? "Söker..." : searchMessage}
+      </p>
     </div>
   );
 }

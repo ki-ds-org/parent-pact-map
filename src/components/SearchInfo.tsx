@@ -19,8 +19,11 @@ export default function SearchInfo({
           "h-full": fullHeight,
         }
       )}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
     >
-      <h3 className="font-semibold text-sm">{title}</h3>
+      <h2 className="font-semibold text-sm">{title}</h2>
       <p className="text-xs italic">{description}</p>
     </div>
   );

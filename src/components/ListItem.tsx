@@ -25,8 +25,6 @@ function ListItem({
             as="a"
             href={link}
             variant="primary"
-            target="_blank"
-            rel="noopener noreferrer"
             size="sm"
           >
             {callToAction}

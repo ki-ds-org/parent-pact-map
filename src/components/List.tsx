@@ -1,6 +1,7 @@
 import type { Pact } from "../types/Pact";
 import ListItem from "./ListItem";
 import noFoundImage from "../assets/not-found.avif";
+import { getJoinUrl } from "../util/joinUrl";
 
 interface ListProps {
   filteredPacts: Pact[];
@@ -10,7 +11,7 @@ function List({ filteredPacts }: ListProps) {
   return (
     <div className="w-full h-full overflow-y-scroll bg-inherit">
       <div className="">
-        <ul className="">
+        <ul aria-label="Föräldrapakter">
           {filteredPacts.map((pact, i) => {
             const parentLabel =
               pact.parentCount === 1 ? "förälder" : "föräldrar";
@@ -20,7 +21,7 @@ function List({ filteredPacts }: ListProps) {
                 key={`${pact.id}-${i}`}
                 title={`${pact.name}`}
                 description={`${pact.parentCount} ${parentLabel}, ${pact.studentCount} ${studentLabel}`}
-                link="https://ki-ds.org/foraldrapakten/ga-med"
+                link={getJoinUrl(pact)}
                 callToAction="Gå med"
               />
             );
@@ -32,7 +33,7 @@ function List({ filteredPacts }: ListProps) {
               <div className="flex items-center justify-center">
                 <img
                   src={noFoundImage}
-                  alt="Not found image is a sad face"
+                  alt=""
                   className="w-14 h-auto"
                 />
               </div>

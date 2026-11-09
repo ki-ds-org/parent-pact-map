@@ -16,6 +16,7 @@ interface MapSidebarProps {
   closestPacts: Pact[];
   filteredPacts: Pact[];
   currentLocationInfo?: LocationInfo;
+  geolocationMessage: string;
   aggregation: "school" | "municipality";
   onAggregationChange: (mode: "school" | "municipality") => void;
 }
@@ -28,6 +29,7 @@ export default function MapSidebar({
   closestPacts,
   filteredPacts,
   currentLocationInfo,
+  geolocationMessage,
   aggregation,
   onAggregationChange,
 }: MapSidebarProps) {
@@ -43,19 +45,26 @@ export default function MapSidebar({
       : `Visar alla ${filteredPacts.length} pakter i Sverige. Sök efter kommun för att hitta pakter nära dig.`;
 
   return (
-    <div className="w-full md:w-1/2 md:overflow-y-scroll">
+    <aside
+      className="w-full md:w-1/2 md:overflow-y-scroll"
+      aria-labelledby="map-sidebar-title"
+    >
       <div className="md:px-2">
-        <h3 className="text-base font-semibold py-1">
+        <h1 id="map-sidebar-title" className="text-base font-semibold py-1">
           Hitta lokala Föräldrapakter
-        </h3>
+        </h1>
       </div>
       <div>
         <div className="w-full flex-1 md:flex-none flex flex-col md:p-2">
           <Search onSearch={onSearch} apiKey={config.googleApiKey!} />
           <div className="flex flex-wrap items-center justify-end gap-3 py-2 text-xs text-on-background pointer-events-auto">
-            <button className="hover:bg-transparent" onClick={onFindClosest}>
+            <button
+              type="button"
+              className="hover:bg-transparent"
+              onClick={onFindClosest}
+            >
               <Pill>
-                <MapPinIcon className="w-4 h-4" /> Hitta andra nära mig
+                <MapPinIcon className="w-4 h-4" aria-hidden="true" /> Hitta andra nära mig
               </Pill>
             </button>
             <SegmentedToggle
@@ -65,6 +74,14 @@ export default function MapSidebar({
               labels={["Skolor", "Kommuner"]}
             />
           </div>
+          <p
+            className="sr-only"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {geolocationMessage}
+          </p>
         </div>
       </div>
       <div className="hidden md:block">
@@ -85,6 +102,6 @@ export default function MapSidebar({
           />
         ) : null}
       </div>
-    </div>
+    </aside>
   );
 }

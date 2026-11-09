@@ -42,30 +42,38 @@ export default function MapContainer({
   });
 
   return (
-    <LeafletMapContainer
-      center={[62.0, 10.0]} // Centered over Sweden
-      zoom={isMobile ? 4 : 5}
-      maxBounds={[
-        [54.5, 7.5],
-        [69.5, 25.5],
-      ]} // Rough bounding box for Sweden
-      minZoom={4}
-      maxZoom={15}
-      maxBoundsViscosity={1.0}
-      style={{ height: "100%", width: "100%" }}
-      ref={mapRef}
+    <div
+      id="interactive-map"
+      role="region"
+      aria-label="Interaktiv karta över Sverige. Använd piltangenterna för att panorera och plus/minus för att zooma."
+      tabIndex={-1}
+      className="h-full w-full"
     >
-      <TileLayer
-        attribution="&copy; OpenStreetMap contributors &amp; Geoapify"
-        url="https://maps.geoapify.com/v1/tile/osm-bright-smooth/{z}/{x}/{y}.png?apiKey=c7be631f429d488f953709566022593d"
-      />
-      <HeatmapLayer points={heatPoints} />
-      <ClusterMarkers coordinates={markerPoints} />
-      <VisibleMarkerTracker
-        allMarkers={markerPoints}
-        onVisibleChange={onVisibleChange}
-      />
-      <ZoomStartListener onZoomStart={onZoomStart} />
-    </LeafletMapContainer>
+      <LeafletMapContainer
+        center={[62.0, 10.0]} // Centered over Sweden
+        zoom={isMobile ? 4 : 5}
+        maxBounds={[
+          [54.5, 7.5],
+          [69.5, 25.5],
+        ]} // Rough bounding box for Sweden
+        minZoom={4}
+        maxZoom={15}
+        maxBoundsViscosity={1.0}
+        style={{ height: "100%", width: "100%" }}
+        ref={mapRef}
+      >
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors &amp; Geoapify"
+          url="https://maps.geoapify.com/v1/tile/osm-bright-smooth/{z}/{x}/{y}.png?apiKey=c7be631f429d488f953709566022593d"
+        />
+        <HeatmapLayer points={heatPoints} />
+        <ClusterMarkers coordinates={markerPoints} />
+        <VisibleMarkerTracker
+          allMarkers={markerPoints}
+          onVisibleChange={onVisibleChange}
+        />
+        <ZoomStartListener onZoomStart={onZoomStart} />
+      </LeafletMapContainer>
+    </div>
   );
 }
