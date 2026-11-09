@@ -3,6 +3,9 @@
 This project is a React + TypeScript + Vite app deployed via GitHub Pages.  
 It is designed to be embedded into WordPress (e.g., Elementor) as a widget using the generated JavaScript and CSS files.
 
+The map loads alongside the pact data; pact search and lists become available once
+the API responds. If the request fails, the user can retry without reloading the map.
+
 ---
 
 ## 🔧 Getting Started

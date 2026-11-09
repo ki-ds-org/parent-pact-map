@@ -12,6 +12,7 @@ import { useMapData } from "../hooks/useMapData";
 import "../plugins/BoundaryCanvas";
 import type { Pact } from "../types/Pact";
 import type { LocationInfo } from "../util/searchUtils";
+import Button from "./Button";
 import MapContainer from "./MapContainer";
 import MapSidebar from "./MapSidebar";
 import MobileList from "./MobileList";
@@ -23,9 +24,12 @@ declare module "leaflet" {
 
 interface MapProps {
   pacts: Pact[];
+  loading: boolean;
+  error: string | null;
+  retry: () => void;
 }
 
-function Map({ pacts }: MapProps) {
+function Map({ pacts, loading, error, retry }: MapProps) {
   const [mapRef, setMapRef] = useState<L.Map | null>(null);
   const [visibleMarkers, setVisibleMarkers] = useState<
     [Pact, [number, number]][]
@@ -167,19 +171,36 @@ function Map({ pacts }: MapProps) {
   return (
     <div className="flex h-full relative">
       <div className="flex flex-1 flex-col md:flex-row w-full md:w-1/2 p-4 md:p-0">
-        <MapSidebar
-          onSearch={handleSearch}
-          onFindClosest={getClosestPacts}
-          searchQuery={searchQuery}
-          zooming={zooming}
-          closestPacts={closestPacts}
-          filteredPacts={filteredPacts}
-          currentLocationInfo={currentLocationInfo}
-          heatMetric={heatMetric}
-          aggregation={aggregation}
-          onHeatMetricChange={setHeatMetric}
-          onAggregationChange={setAggregation}
-        />
+        {loading || error ? (
+          <div className="w-full md:w-1/2 flex flex-col items-center justify-center gap-4 p-4">
+            {loading ? (
+              <p role="status">Laddar pakter...</p>
+            ) : (
+              <>
+                <p role="alert" className="text-center">
+                  Kunde inte ladda pakter: {error}
+                </p>
+                <Button variant="primary" onClick={retry}>
+                  Försök igen
+                </Button>
+              </>
+            )}
+          </div>
+        ) : (
+          <MapSidebar
+            onSearch={handleSearch}
+            onFindClosest={getClosestPacts}
+            searchQuery={searchQuery}
+            zooming={zooming}
+            closestPacts={closestPacts}
+            filteredPacts={filteredPacts}
+            currentLocationInfo={currentLocationInfo}
+            heatMetric={heatMetric}
+            aggregation={aggregation}
+            onHeatMetricChange={setHeatMetric}
+            onAggregationChange={setAggregation}
+          />
+        )}
 
         <div className={mapContainerClass}>
           <MapContainer
@@ -193,13 +214,15 @@ function Map({ pacts }: MapProps) {
           />
         </div>
 
-        <MobileList
-          searchQuery={searchQuery}
-          zooming={zooming}
-          closestPacts={closestPacts}
-          filteredPacts={filteredPacts}
-          heatMetric={heatMetric}
-        />
+        {!loading && !error && (
+          <MobileList
+            searchQuery={searchQuery}
+            zooming={zooming}
+            closestPacts={closestPacts}
+            filteredPacts={filteredPacts}
+            heatMetric={heatMetric}
+          />
+        )}
       </div>
     </div>
   );
