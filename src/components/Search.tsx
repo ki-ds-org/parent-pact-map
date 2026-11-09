@@ -39,6 +39,7 @@ function municipalityMatchesQuery(name: string, query: string) {
 function Search({ onSearch, municipalities }: SearchProps) {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const normalizedQuery = normalize(query.trim());
 
   const suggestions = useMemo((): SearchOption[] => {
@@ -103,18 +104,31 @@ function Search({ onSearch, municipalities }: SearchProps) {
         ? option.municipality.name
         : option.pact.name
     );
+    setSelectedSchoolId(
+      option.kind === "school" ? option.pact.id : null
+    );
     setIsFocused(false);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    if (selectedSchoolId) {
+      const selectedSchool = municipalities
+        .flatMap((municipality) => municipality.schools)
+        .find((school) => school.id === selectedSchoolId);
+      if (selectedSchool) {
+        selectOption({ kind: "school", pact: selectedSchool });
+        return;
+      }
+    }
+
     const normalized = normalize(query.trim());
-    const exactMatch = suggestions.find((option) =>
+    const exactMatches = suggestions.filter((option) =>
       option.kind === "municipality"
         ? municipalityNamesMatch(option.municipality.name, query.trim())
         : normalize(option.pact.name) === normalized
     );
-    if (exactMatch) selectOption(exactMatch);
+    if (exactMatches.length === 1) selectOption(exactMatches[0]);
   };
 
   return (
@@ -127,6 +141,7 @@ function Search({ onSearch, municipalities }: SearchProps) {
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
+              setSelectedSchoolId(null);
               setIsFocused(true);
             }}
             onClick={() => setIsFocused(true)}
