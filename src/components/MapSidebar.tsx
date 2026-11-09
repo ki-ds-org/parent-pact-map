@@ -53,7 +53,7 @@ export default function MapSidebar({
 
   return (
     <aside
-      className="w-full md:w-1/2 md:overflow-y-scroll"
+      className="w-full min-w-0 md:w-1/2"
       aria-labelledby="map-sidebar-title"
     >
       <div className="md:px-2">

@@ -83,7 +83,7 @@ To embed the widget into a WordPress page (e.g., using an Elementor HTML widget)
   rel="stylesheet"
   href="https://ki-ds-org.github.io/parent-pact-map/assets/index.css"
 />
-<div id="react-widget" style="width: 100%; height: 84vh;">
+<div id="react-widget" style="width: 100%;">
   <div id="react-pact-map"></div>
 </div>
 <script src="https://ki-ds-org.github.io/parent-pact-map/assets/index.js"></script>
@@ -91,9 +91,9 @@ To embed the widget into a WordPress page (e.g., using an Elementor HTML widget)
 
 ### Embed Notes:
 
-- `#react-widget`: optional outer wrapper that controls height/width (can be styled in Elementor).
+- `#react-widget`: optional outer wrapper that controls width (can be styled in Elementor).
 - `#react-pact-map`: the element the React app mounts into (see `main.tsx`).
-- The app will stretch to fill the height and width of the parent container.
+- The widget grows with its results so the page scrolls instead of the widget. On desktop, the map stays visible alongside the results while scrolling. Leave the wrapper height automatic and avoid placing it inside a height-constrained or scrolling container, which can prevent the map from sticking.
 - The static filenames (`index.js`, `index.css`) allow editors to embed once and avoid updates after every deploy.
 
 ## 🧩 React App Mount Point

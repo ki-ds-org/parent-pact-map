@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import L from "leaflet";
 import "leaflet.heat";
 import "leaflet.markercluster";
@@ -134,14 +133,6 @@ function Map({ pacts }: MapProps) {
     }
   };
 
-  const mapContainerClass = classNames(
-    "w-full md:w-1/2 z-10 relative rounded-t-lg overflow-hidden",
-    {
-      "h-[50vh] md:h-[100vh]": searchQuery || zooming,
-      "h-full": !searchQuery && !zooming,
-    }
-  );
-
   const getClosestPacts = useCallback(() => {
     if (!navigator.geolocation) {
       setGeolocationMessage("Din webbläsare stöder inte platsdelning.");
@@ -197,14 +188,14 @@ function Map({ pacts }: MapProps) {
   const filteredPacts = mapPacts.filter((pact) => visiblePactIds.has(pact.id));
 
   return (
-    <div className="flex h-full relative">
+    <div className="flex relative min-w-0">
       <a
         href="#interactive-map"
         className="sr-only focus:not-sr-only focus:absolute focus:z-[1000] focus:top-2 focus:left-2 focus:bg-primary focus:text-on-primary focus:px-4 focus:py-2"
       >
         Hoppa till kartan
       </a>
-      <div className="flex flex-1 flex-col md:flex-row w-full md:w-1/2 p-4 md:p-0">
+      <div className="flex flex-1 min-w-0 flex-col md:flex-row w-full p-4 md:p-0">
         <MapSidebar
           onSearch={handleSearch}
           onClearSearch={handleClearSearch}
@@ -219,7 +210,7 @@ function Map({ pacts }: MapProps) {
           onAggregationChange={setAggregation}
         />
 
-        <div className={mapContainerClass}>
+        <div className="w-full min-w-0 md:w-1/2 h-[50vh] h-[50svh] min-h-60 md:h-[80vh] md:h-[80svh] md:min-h-0 z-10 relative md:sticky md:top-0 md:self-start rounded-t-lg overflow-hidden">
           <MapContainer
             heatPoints={heatPoints}
             markerPoints={markerPoints}

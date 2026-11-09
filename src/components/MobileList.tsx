@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import type { Pact } from "../types/Pact";
 import List from "./List";
 import SearchInfo from "./SearchInfo";
@@ -21,14 +20,6 @@ export default function MobileList({
   const resultCountLabel = `${resultCount} ${
     resultCount === 1 ? "pakt" : "pakter"
   }`;
-  const listClass = classNames(
-    "w-full overflow-y-scroll bg-inherit pointer-events-auto border border-primary rounded-b-lg md:hidden",
-    {
-      "h-[50vh] md:h-[100vh]": searchQuery || zooming,
-      "h-[25vh] md:h-[100vh]": !searchQuery && !zooming,
-    }
-  );
-
   const searchInfoDescription =
     searchQuery || zooming
       ? closestPacts.length > 0
@@ -41,7 +32,7 @@ export default function MobileList({
         : "Inga pakter visas i kartområdet. Flytta eller zooma kartan för att hitta pakter.";
 
   return (
-    <section className={listClass} aria-label="Sökresultat">
+    <section className="w-full bg-inherit pointer-events-auto border border-primary rounded-b-lg md:hidden" aria-label="Sökresultat">
       <SearchInfo
         title="Sökresultat"
         description={searchInfoDescription}

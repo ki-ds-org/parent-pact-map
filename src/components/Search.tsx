@@ -227,7 +227,7 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
         className="flex flex-row gap-2"
         aria-label="Sök efter kommun"
       >
-        <div className="relative flex-1 w-80">
+        <div className="relative flex-1 min-w-0">
           <label htmlFor="municipality-search" className="sr-only">
             Sök efter kommun
           </label>
