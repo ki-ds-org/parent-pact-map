@@ -11,7 +11,7 @@ function List({ filteredPacts, heatMetric }: ListProps) {
   return (
     <div className="w-full h-full overflow-y-scroll bg-inherit">
       <div className="">
-        <ul className="">
+        <ul aria-label="Föräldrapakter">
           {filteredPacts.map((pact, i) => {
             const count =
               heatMetric === "parents" ? pact.parentCount : pact.studentCount;
@@ -40,7 +40,7 @@ function List({ filteredPacts, heatMetric }: ListProps) {
               <div className="flex items-center justify-center">
                 <img
                   src={noFoundImage}
-                  alt="Not found image is a sad face"
+                  alt=""
                   className="w-14 h-auto"
                 />
               </div>

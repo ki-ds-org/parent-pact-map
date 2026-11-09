@@ -9,8 +9,6 @@ interface ButtonProps {
   fullWidth?: boolean;
   as?: "button" | "a";
   href?: string;
-  target?: string;
-  rel?: string;
   disabled?: boolean;
 }
 
@@ -23,8 +21,6 @@ function Button({
   fullWidth = false,
   as = "button",
   href,
-  target,
-  rel,
   disabled = false,
 }: ButtonProps) {
   const buttonClass = classNames(
@@ -44,8 +40,6 @@ function Button({
     return (
       <a
         href={href}
-        target={target}
-        rel={rel}
         onClick={onClick}
         className={buttonClass}
       >

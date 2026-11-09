@@ -9,29 +9,32 @@ function App() {
 
   if (loading) {
     return (
-      <div className={containerClass + " flex items-center justify-center"}>
+      <main className={containerClass + " flex items-center justify-center"}>
+        <p className="sr-only" role="status" aria-live="polite">
+          Laddar pakter...
+        </p>
         <p className="text-on-background">Laddar pakter...</p>
-      </div>
+      </main>
     );
   }
 
   if (error) {
     return (
-      <div className={containerClass + " flex flex-col items-center justify-center gap-4 p-4"}>
-        <p className="text-on-background text-center">
+      <main className={containerClass + " flex flex-col items-center justify-center gap-4 p-4"}>
+        <p className="text-on-background text-center" role="alert">
           Kunde inte ladda pakter: {error}
         </p>
         <Button variant="primary" onClick={retry}>
           Försök igen
         </Button>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className={containerClass}>
+    <main className={containerClass} aria-label="Föräldrapakten">
       <Map pacts={pacts} />
-    </div>
+    </main>
   );
 }
 
