@@ -15,28 +15,29 @@ export default function MobileList({
   closestPacts,
   filteredPacts,
 }: MobileListProps) {
+  const results = closestPacts.length > 0 ? closestPacts : filteredPacts;
+  const resultCount = results.length;
+  const resultCountLabel = `${resultCount} ${
+    resultCount === 1 ? "pakt" : "pakter"
+  }`;
   const searchInfoDescription =
     searchQuery || zooming
       ? closestPacts.length > 0
-        ? `Visar de ${closestPacts.length} pakter som är närmast dig.`
-        : `Visar ${
-            filteredPacts.length > 1
-              ? `${filteredPacts.length} pakter`
-              : "1 pakt"
-          }.`
-      : `Visar alla ${filteredPacts.length} pakter i Sverige. Sök efter kommun för att hitta pakter nära dig.`;
+        ? `Visar ${resultCountLabel} närmast dig.`
+        : resultCount > 0
+          ? `Visar ${resultCountLabel} i det här området.`
+          : "Inga pakter hittades i området. Prova att flytta eller zooma kartan."
+      : resultCount > 0
+        ? `Visar ${resultCountLabel} i kartområdet. Flytta eller zooma kartan för att uppdatera resultaten.`
+        : "Inga pakter visas i kartområdet. Flytta eller zooma kartan för att hitta pakter.";
 
   return (
     <section className="w-full bg-inherit pointer-events-auto border border-primary rounded-b-lg md:hidden" aria-label="Sökresultat">
       <SearchInfo
         title="Sökresultat"
-        description={filteredPacts.length > 0 ? searchInfoDescription : ""}
+        description={searchInfoDescription}
       />
-      {searchQuery || zooming ? (
-        <List
-          filteredPacts={closestPacts.length > 0 ? closestPacts : filteredPacts}
-        />
-      ) : null}
+      <List filteredPacts={results} />
     </section>
   );
 }
