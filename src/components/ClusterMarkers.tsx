@@ -37,7 +37,7 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
           total = cluster.getChildCount?.() ?? childMarkers.length;
         }
 
-        let color = "#808080";
+        let color = "#757575";
         if (total >= 50) {
           color = "#5e5e5e";
         } else if (total >= 20) {
@@ -63,14 +63,19 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
     coordinates.forEach(([pact, [lat, lng]]) => {
       const count =
         heatMetric === "parents" ? pact.parentCount : pact.studentCount;
-      const marker = L.marker([lat, lng])
-        .setIcon(markerIcon)
-        .bindPopup(
-          `<div class="text-sm">
-          <div>${pact.name} (${count} ${label(count)})</div><div>
-           <a href="${getJoinUrl(pact)}">Gå med</a>
-          </div></div>`
-        );
+      const marker = L.marker([lat, lng], {
+        title: `${pact.name}: ${count} ${label(count)}`,
+        alt: `${pact.name}: ${count} ${label(count)}`,
+      }).setIcon(markerIcon);
+      const popup = document.createElement("div");
+      popup.className = "text-sm";
+      const description = document.createElement("p");
+      description.textContent = `${pact.name} (${count} ${label(count)})`;
+      const link = document.createElement("a");
+      link.href = getJoinUrl(pact);
+      link.textContent = "Gå med";
+      popup.append(description, link);
+      marker.bindPopup(popup);
       (marker as any)._pact = pact;
       markers.addLayer(marker);
     });

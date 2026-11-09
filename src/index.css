@@ -86,15 +86,40 @@
   color: var(--color-on-primary);
 }
 
+.react-pact-map :focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.react-pact-map input:focus-visible {
+  outline-offset: 1px;
+}
+
+.react-pact-map [aria-live],
+.react-pact-map [role="status"] {
+  color: var(--color-on-background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .react-pact-map *,
+  .react-pact-map *::before,
+  .react-pact-map *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 .map-marker-cluster {
-  background-color: var(--color-primary);
+  background-color: #444;
   color: #fff;
   border-radius: 50%;
-  font-size: 10px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 23px;
-  height: 23px;
+  width: 30px;
+  height: 30px;
   font-weight: bold;
 }

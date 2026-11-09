@@ -43,6 +43,7 @@ function Map({ pacts }: MapProps) {
   const [aggregation, setAggregation] = useState<"school" | "municipality">(
     "school"
   );
+  const [geolocationMessage, setGeolocationMessage] = useState("");
 
   const isMobile = useIsMobileView();
   const { heatPoints, markerPoints, pacts: mapPacts } = useMapData(pacts, {
@@ -129,36 +130,54 @@ function Map({ pacts }: MapProps) {
   );
 
   const getClosestPacts = useCallback(() => {
-    console.log("getClosestPacts called, mapRef:", mapRef);
+    if (!navigator.geolocation) {
+      setGeolocationMessage("Din webbläsare stöder inte platsdelning.");
+      return;
+    }
 
-    navigator.geolocation.getCurrentPosition((position) => {
-      const userLat = position.coords.latitude;
-      const userLng = position.coords.longitude;
+    setGeolocationMessage("Hämtar din position...");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
 
-      const { pacts: closestPacts, closestSchool } = findClosestPacts(
-      mapPacts,
-        userLat,
-        userLng,
-        3,
-        80
-      );
+        const { pacts: closestPacts, closestSchool } = findClosestPacts(
+          mapPacts,
+          userLat,
+          userLng,
+          3,
+          80
+        );
 
-      const targetCoords = closestSchool
-        ? ([closestSchool.coordinates[0], closestSchool.coordinates[1]] as [
-            number,
-            number
-          ])
-        : ([userLat, userLng] as [number, number]);
+        const targetCoords: [number, number] = closestSchool
+          ? [closestSchool.coordinates[0], closestSchool.coordinates[1]]
+          : [userLat, userLng];
 
-      setMapViewWithLayoutDelay(
-        targetCoords,
-        () => {
-          setZooming(true);
-        },
-        () => setClosestPacts(closestPacts)
-      );
-    });
-  }, [pacts, findClosestPacts, setMapViewWithLayoutDelay]);
+        setMapViewWithLayoutDelay(
+          targetCoords,
+          () => {
+            setZooming(true);
+          },
+          () => setClosestPacts(closestPacts)
+        );
+        setGeolocationMessage(
+          closestPacts.length
+            ? `Hittade ${closestPacts.length} närliggande pakter.`
+            : "Hittade inga pakter inom 80 kilometer."
+        );
+      },
+      (error) => {
+        const message =
+          error.code === error.PERMISSION_DENIED
+            ? "Platsåtkomst nekades. Tillåt platsåtkomst i webbläsaren för att hitta pakter nära dig."
+            : error.code === error.POSITION_UNAVAILABLE
+              ? "Din position kunde inte hämtas."
+              : "Det tog för lång tid att hämta din position. Försök igen.";
+        setGeolocationMessage(message);
+      },
+      { timeout: 10000 }
+    );
+  }, [mapPacts, findClosestPacts, setMapViewWithLayoutDelay]);
 
   // Filter pacts based on visible markers' pactIds
   const visiblePactIds = new Set(visibleMarkers.map(([pact]) => pact.id));
@@ -166,6 +185,12 @@ function Map({ pacts }: MapProps) {
 
   return (
     <div className="flex h-full relative">
+      <a
+        href="#interactive-map"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-[1000] focus:top-2 focus:left-2 focus:bg-primary focus:text-on-primary focus:px-4 focus:py-2"
+      >
+        Hoppa till kartan
+      </a>
       <div className="flex flex-1 flex-col md:flex-row w-full md:w-1/2 p-4 md:p-0">
         <MapSidebar
           onSearch={handleSearch}
@@ -175,6 +200,7 @@ function Map({ pacts }: MapProps) {
           closestPacts={closestPacts}
           filteredPacts={filteredPacts}
           currentLocationInfo={currentLocationInfo}
+          geolocationMessage={geolocationMessage}
           heatMetric={heatMetric}
           aggregation={aggregation}
           onHeatMetricChange={setHeatMetric}
