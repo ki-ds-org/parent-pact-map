@@ -14,10 +14,11 @@ import SearchDropdown from "./SearchDropdown";
 
 interface SearchProps {
   onSearch: (locationInfo: LocationInfo) => void;
+  onClear: () => void;
   apiKey?: string;
 }
 
-function Search({ onSearch, apiKey }: SearchProps) {
+function Search({ onSearch, onClear, apiKey }: SearchProps) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -191,6 +192,15 @@ function Search({ onSearch, apiKey }: SearchProps) {
     }
   };
 
+  const handleClear = () => {
+    setQuery("");
+    setSuggestions([]);
+    setShowDropdown(false);
+    setActiveIndex(-1);
+    setSearchMessage("");
+    onClear();
+  };
+
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown" && suggestions.length > 0) {
       event.preventDefault();
@@ -223,10 +233,14 @@ function Search({ onSearch, apiKey }: SearchProps) {
           </label>
           <input
             id="municipality-search"
-            type="text"
+            type="search"
             placeholder="Sök efter kommun"
             value={query}
             onChange={(e) => {
+              if (!e.target.value) {
+                handleClear();
+                return;
+              }
               setQuery(e.target.value);
               setSearchMessage("");
               setActiveIndex(-1);

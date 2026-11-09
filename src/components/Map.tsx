@@ -5,7 +5,7 @@ import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet/dist/leaflet.css";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useGeolocation } from "../hooks/useGeolocation";
 import useIsMobileView from "../hooks/useIsMobileView";
 import { useMapData } from "../hooks/useMapData";
@@ -41,6 +41,7 @@ function Map({ pacts }: MapProps) {
     "school"
   );
   const [geolocationMessage, setGeolocationMessage] = useState("");
+  const isResettingMap = useRef(false);
 
   const isMobile = useIsMobileView();
   const { heatPoints, markerPoints, pacts: mapPacts } = useMapData(pacts, {
@@ -108,6 +109,8 @@ function Map({ pacts }: MapProps) {
   };
 
   const handleZooming = () => {
+    if (isResettingMap.current) return;
+
     if (isProgrammaticZoom) {
       setCurrentLocationInfo(undefined);
       setIsProgrammaticZoom(false);
@@ -115,6 +118,20 @@ function Map({ pacts }: MapProps) {
 
     setZooming(true);
     setClosestPacts([]);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery(null);
+    setCurrentLocationInfo(undefined);
+    setClosestPacts([]);
+    setZooming(false);
+    if (mapRef) {
+      isResettingMap.current = true;
+      mapRef.invalidateSize();
+      mapRef.setView([62.0, 10.0], isMobile ? 4 : 5);
+      isResettingMap.current = false;
+      setZooming(false);
+    }
   };
 
   const mapContainerClass = classNames(
@@ -190,6 +207,7 @@ function Map({ pacts }: MapProps) {
       <div className="flex flex-1 flex-col md:flex-row w-full md:w-1/2 p-4 md:p-0">
         <MapSidebar
           onSearch={handleSearch}
+          onClearSearch={handleClearSearch}
           onFindClosest={getClosestPacts}
           searchQuery={searchQuery}
           zooming={zooming}
