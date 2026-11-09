@@ -2,6 +2,7 @@ import { useMap } from "react-leaflet";
 import { useEffect } from "react";
 import L from "leaflet";
 import type { Pact } from "../types/Pact";
+import { getJoinUrl } from "../util/joinUrl";
 
 interface ClusterMarkersProps {
   coordinates: [Pact, [number, number]][];
@@ -71,7 +72,7 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
       const description = document.createElement("p");
       description.textContent = `${pact.name} (${count} ${label(count)})`;
       const link = document.createElement("a");
-      link.href = "https://ki-ds.org/foraldrapakten/ga-med";
+      link.href = getJoinUrl(pact);
       link.textContent = "Gå med";
       popup.append(description, link);
       marker.bindPopup(popup);
