@@ -39,10 +39,10 @@ function List({ filteredPacts }: ListProps) {
               </div>
               <div className="flex flex-col">
                 <h3 className="text-lg font-semibold text-left">
-                  Ingen pakt hittades
+                  Det finns ännu ingen pakt här
                 </h3>
                 <p className="text-sm text-left font-light">
-                  Men det finns garanterat likasinnade i ditt närområde.
+                  Men det finns garanterat likasinnade i ditt närområde. Bli den första familjen i ert område att vänta med smartphone – och hjälp fler familjer att göra samma val!
                 </p>
               </div>
             </div>
