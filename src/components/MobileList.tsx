@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import type { Pact } from "../types/Pact";
 import List from "./List";
 import SearchInfo from "./SearchInfo";
@@ -16,14 +15,6 @@ export default function MobileList({
   closestPacts,
   filteredPacts,
 }: MobileListProps) {
-  const listClass = classNames(
-    "w-full overflow-y-scroll bg-inherit pointer-events-auto border border-primary rounded-b-lg md:hidden",
-    {
-      "h-[50vh] md:h-[100vh]": searchQuery || zooming,
-      "h-[25vh] md:h-[100vh]": !searchQuery && !zooming,
-    }
-  );
-
   const searchInfoDescription =
     searchQuery || zooming
       ? closestPacts.length > 0
@@ -36,11 +27,10 @@ export default function MobileList({
       : `Visar alla ${filteredPacts.length} pakter i Sverige. Sök efter kommun för att hitta pakter nära dig.`;
 
   return (
-    <section className={listClass} aria-label="Sökresultat">
+    <section className="w-full bg-inherit pointer-events-auto border border-primary rounded-b-lg md:hidden" aria-label="Sökresultat">
       <SearchInfo
         title="Sökresultat"
         description={filteredPacts.length > 0 ? searchInfoDescription : ""}
-        fullHeight={!searchQuery && !zooming}
       />
       {searchQuery || zooming ? (
         <List
