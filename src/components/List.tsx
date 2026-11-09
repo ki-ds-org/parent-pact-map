@@ -42,7 +42,8 @@ function List({ filteredPacts }: ListProps) {
                   Ingen pakt hittades
                 </h3>
                 <p className="text-sm text-left font-light">
-                  Men det finns garanterat likasinnade i ditt närområde.
+                  Prova att flytta eller zooma kartan, eller sök efter en annan
+                  kommun. Du kan också skapa en lokal pakt.
                 </p>
               </div>
             </div>
