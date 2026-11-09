@@ -9,11 +9,22 @@ function App() {
 
   if (loading) {
     return (
-      <main className={containerClass + " flex items-center justify-center"}>
+      <main
+        className={
+          containerClass +
+          " flex flex-col items-center justify-center gap-6 min-h-screen"
+        }
+      >
         <p className="sr-only" role="status" aria-live="polite">
           Laddar pakter...
         </p>
-        <p className="text-on-background">Laddar pakter...</p>
+        <div
+          aria-hidden="true"
+          className="animate-spin rounded-full border-8 border-current border-t-transparent text-on-background opacity-80 w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40"
+        />
+        <p className="text-on-background text-xl sm:text-2xl" aria-hidden="true">
+          Laddar pakter...
+        </p>
       </main>
     );
   }
