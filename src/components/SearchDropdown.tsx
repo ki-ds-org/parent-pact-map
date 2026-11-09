@@ -14,15 +14,15 @@ function SearchDropdown({
   onSuggestionClick,
 }: SearchDropdownProps) {
   if (isLoading) {
-    return <div className="p-2.5 text-center" role="status">Laddar förslag...</div>;
+    return <div className="c-search-dropdown__message" role="status">Laddar förslag...</div>;
   }
 
   if (suggestions.length === 0) {
-    return <div className="p-2.5 text-center">Inga förslag hittades.</div>;
+    return <div className="c-search-dropdown__message">Inga förslag hittades.</div>;
   }
 
   return (
-    <ul id="municipality-suggestions" role="listbox" className="list-none">
+    <ul id="municipality-suggestions" role="listbox" className="c-search-dropdown">
       {suggestions.map((s, index) => {
         const key =
           s.placePrediction?.placeId ??
@@ -37,11 +37,9 @@ function SearchDropdown({
             aria-selected={activeIndex === index}
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => onSuggestionClick(s)}
-            className={`p-2.5 cursor-pointer border-b border-gray-600 text-sm hover:bg-background/60 transition-colors ${
-              activeIndex === index ? "bg-background/60" : ""
-            }`}
+            className="c-search-dropdown__option"
           >
-            <div className="font-semibold">{primary}</div>
+            <div className="c-search-dropdown__primary">{primary}</div>
           </li>
         );
       })}

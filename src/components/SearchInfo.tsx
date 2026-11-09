@@ -9,13 +9,13 @@ export default function SearchInfo({
 }: SearchInfoProps) {
   return (
     <div
-      className="flex flex-col gap-1 py-2 px-3 bg-background-secondary"
+      className="c-search-info"
       role="status"
       aria-live="polite"
       aria-atomic="true"
     >
-      <h2 className="font-semibold text-sm">{title}</h2>
-      <p className="text-xs italic">{description}</p>
+      <h2 className="c-search-info__title">{title}</h2>
+      <p className="c-search-info__description">{description}</p>
     </div>
   );
 }

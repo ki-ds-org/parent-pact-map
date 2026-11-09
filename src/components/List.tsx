@@ -9,9 +9,9 @@ interface ListProps {
 
 function List({ filteredPacts }: ListProps) {
   return (
-    <div className="w-full bg-inherit">
-      <div className="">
-        <ul aria-label="Föräldrapakter">
+    <div className="c-results">
+      <div className="c-results__list">
+        <ul className="c-results__items" aria-label="Föräldrapakter">
           {filteredPacts.map((pact, i) => {
             const parentLabel =
               pact.parentCount === 1 ? "förälder" : "föräldrar";
@@ -28,29 +28,29 @@ function List({ filteredPacts }: ListProps) {
           })}
         </ul>
         {filteredPacts.length === 0 && (
-          <div className="text-center py-2 px-4">
-            <div className="flex gap-4 mb-4">
-              <div className="flex items-center justify-center">
+          <div className="c-results__empty">
+            <div className="c-results__empty-content">
+              <div className="c-results__empty-image-wrap">
                 <img
                   src={noFoundImage}
                   alt=""
-                  className="w-14 h-auto"
+                  className="c-results__empty-image"
                 />
               </div>
-              <div className="flex flex-col">
-                <h3 className="text-lg font-semibold text-left">
+              <div className="c-results__empty-copy">
+                <h3 className="c-results__empty-title">
                   Ingen pakt hittades
                 </h3>
-                <p className="text-sm text-left font-light">
+                <p className="c-results__empty-description">
                   Prova att flytta eller zooma kartan, eller sök efter en annan
                   kommun. Du kan också skapa en lokal pakt.
                 </p>
               </div>
             </div>
-            <div className="flex justify-center md:w-1/2 mx-auto">
+            <div className="c-results__empty-action">
               <a
                 href="https://ki-ds.org/foraldrapakten/ga-med"
-                className="pact-btn-link w-full block text-center px-4 py-1 text-sm rounded-3xl font-semibold bg-primary text-on-primary hover:bg-primary/80 transition-colors"
+                className="c-results__create-link"
               >
                 Skapa er lokala pakt!
               </a>

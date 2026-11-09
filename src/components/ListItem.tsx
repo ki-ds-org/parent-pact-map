@@ -17,9 +17,9 @@ function ListItem({
   callToAction,
 }: ListItemProps) {
   return (
-    <li className="flex flex-col p-4 bg-inherit border-b border-gray-200 transition-shadow duration-200">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="min-w-0 font-medium text-lg [overflow-wrap:anywhere]">{title}</h3>
+    <li className="c-result">
+      <div className="c-result__heading">
+        <h3 className="c-result__title">{title}</h3>
         {callToAction && (
           <Button
             as="a"
@@ -31,9 +31,9 @@ function ListItem({
           </Button>
         )}
       </div>
-      <div className="flex-1">
-        <p className="flex gap-1 text-sm">{description}</p>
-        <p className="flex flex-wrap gap-2 pt-2">
+      <div className="c-result__body">
+        <p className="c-result__description">{description}</p>
+        <p className="c-result__tags">
           {pills?.map((pill) => {
             return (
               <Pill key={pill} variant="secondary">

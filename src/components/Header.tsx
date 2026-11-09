@@ -1,14 +1,14 @@
 function Header() {
   return (
-    <div className="w-full h-full z-10">
-      <div className="flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold mt-4 uppercase">Föräldrapakten</h1>
-        <p className="text-sm">
+    <header className="c-header">
+      <div className="c-header__content">
+        <h1 className="c-header__title">Föräldrapakten</h1>
+        <p className="c-header__description">
           Parent Pact is a platform for parents to find and connect with other
           parents.
         </p>
       </div>
-    </div>
+    </header>
   );
 }
 

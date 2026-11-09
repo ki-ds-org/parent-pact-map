@@ -1,28 +1,27 @@
-import "./App.css";
 import Map from "./components/Map";
 import Button from "./components/Button";
 import usePacts from "./hooks/usePacts";
 
 function App() {
   const { pacts, loading, error, retry } = usePacts();
-  const containerClass = "react-pact-map w-full bg-background text-on-background";
+  const containerClass = "react-pact-map c-app";
 
   if (loading) {
     return (
       <main
         className={
           containerClass +
-          " flex flex-col items-center justify-center gap-6 min-h-48"
+          " c-app__state c-app__state--loading"
         }
       >
-        <p className="sr-only" role="status" aria-live="polite">
+        <p className="u-visually-hidden" role="status" aria-live="polite">
           Laddar pakter...
         </p>
         <div
           aria-hidden="true"
-          className="animate-spin rounded-full border-8 border-current border-t-transparent text-on-background opacity-80 w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40"
+          className="c-app__spinner"
         />
-        <p className="text-on-background text-xl sm:text-2xl" aria-hidden="true">
+        <p className="c-app__loading-message" aria-hidden="true">
           Laddar pakter...
         </p>
       </main>
@@ -31,8 +30,8 @@ function App() {
 
   if (error) {
     return (
-      <main className={containerClass + " min-h-48 flex flex-col items-center justify-center gap-4 p-4"}>
-        <p className="text-on-background text-center" role="alert">
+      <main className={containerClass + " c-app__state c-app__state--error"}>
+        <p className="c-app__error-message" role="alert">
           Kunde inte ladda pakter: {error}
         </p>
         <Button variant="primary" onClick={retry}>

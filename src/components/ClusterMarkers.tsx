@@ -42,7 +42,7 @@ function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
         }
 
         return L.divIcon({
-          html: `<div class="map-marker-cluster" style="background:${color};">
+          html: `<div class="c-map-marker-cluster" style="background:${color};">
                        <span>${total}</span>
                      </div>`,
           className: "leaflet-marker-cluster",
@@ -62,7 +62,7 @@ function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
         }, ${pact.studentCount} ${pact.studentCount === 1 ? "elev" : "elever"}`,
       }).setIcon(markerIcon);
       const popup = document.createElement("div");
-      popup.className = "text-sm";
+      popup.className = "c-marker-popup";
       const description = document.createElement("p");
       description.textContent = `${pact.name} (${pact.parentCount} ${
         pact.parentCount === 1 ? "förälder" : "föräldrar"

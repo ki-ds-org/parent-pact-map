@@ -32,7 +32,7 @@ export default function MobileList({
         : "Inga pakter visas i kartområdet. Flytta eller zooma kartan för att hitta pakter.";
 
   return (
-    <section className="w-full bg-inherit pointer-events-auto border border-primary rounded-b-lg md:hidden" aria-label="Sökresultat">
+    <section className="c-mobile-results" aria-label="Sökresultat">
       <SearchInfo
         title="Sökresultat"
         description={searchInfoDescription}

@@ -221,14 +221,14 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
   };
 
   return (
-    <div ref={dropdownRef} className="relative z-50 w-full pointer-events-auto">
+    <div ref={dropdownRef} className="c-search">
       <form
         onSubmit={handleSearch}
-        className="flex flex-row gap-2"
+        className="c-search__form"
         aria-label="Sök efter kommun"
       >
-        <div className="relative flex-1 min-w-0">
-          <label htmlFor="municipality-search" className="sr-only">
+        <div className="c-search__field">
+          <label htmlFor="municipality-search" className="u-visually-hidden">
             Sök efter kommun
           </label>
           <input
@@ -258,11 +258,11 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
             aria-activedescendant={
               activeIndex >= 0 ? `municipality-option-${activeIndex}` : undefined
             }
-            className="w-full px-4 py-2 text-sm border border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/10 text-white rounded-lg"
+            className="c-search__input"
           />
 
           {showDropdown && (
-            <div className="absolute top-full left-0 right-0 bg-background border border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto z-50">
+            <div className="c-search__dropdown">
               <SearchDropdown
                 activeIndex={activeIndex}
                 isLoading={isLoading}
@@ -281,7 +281,7 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
           Sök
         </Button>
       </form>
-      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+      <p className="u-visually-hidden" role="status" aria-live="polite" aria-atomic="true">
         {isLoading ? "Söker..." : searchMessage}
       </p>
     </div>

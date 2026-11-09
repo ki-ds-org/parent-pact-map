@@ -53,29 +53,29 @@ export default function MapSidebar({
 
   return (
     <aside
-      className="w-full min-w-0 md:w-1/2"
+      className="c-sidebar"
       aria-labelledby="map-sidebar-title"
     >
-      <div className="md:px-2">
-        <h1 id="map-sidebar-title" className="text-base font-semibold py-1">
+      <div className="c-sidebar__heading">
+        <h1 id="map-sidebar-title" className="c-sidebar__title">
           Hitta lokala Föräldrapakter
         </h1>
       </div>
       <div>
-        <div className="w-full flex-1 md:flex-none flex flex-col md:p-2">
+        <div className="c-sidebar__controls">
           <Search
             onSearch={onSearch}
             onClear={onClearSearch}
             apiKey={config.googleApiKey!}
           />
-          <div className="flex flex-wrap items-center justify-end gap-3 py-2 text-xs text-on-background pointer-events-auto">
+          <div className="c-sidebar__actions">
             <button
               type="button"
-              className="hover:bg-transparent"
+              className="c-sidebar__location-button"
               onClick={onFindClosest}
             >
               <Pill>
-                <MapPinIcon className="w-4 h-4" aria-hidden="true" /> Hitta andra nära mig
+                <MapPinIcon className="c-sidebar__location-icon" aria-hidden="true" /> Hitta andra nära mig
               </Pill>
             </button>
             <SegmentedToggle
@@ -86,7 +86,7 @@ export default function MapSidebar({
             />
           </div>
           <p
-            className="sr-only"
+            className="u-visually-hidden"
             role="status"
             aria-live="polite"
             aria-atomic="true"
@@ -95,7 +95,7 @@ export default function MapSidebar({
           </p>
         </div>
       </div>
-      <div className="hidden md:block">
+      <div className="c-sidebar__results">
         <SearchInfo
           title={
             currentLocationInfo?.municipality && closestPacts.length < 1

@@ -6,10 +6,7 @@ interface PillProps {
 }
 
 function Pill({ children, variant = "primary" }: PillProps) {
-  const pillClass = classNames("text-xs rounded-full px-2 py-1 flex flex-row", {
-    "bg-primary text-on-primary": variant === "primary",
-    "bg-inherit border border-white/75 text-white/75": variant === "secondary",
-  });
+  const pillClass = classNames("c-pill", `c-pill--${variant}`);
   return <span className={pillClass}>{children}</span>;
 }
 

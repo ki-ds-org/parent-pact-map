@@ -47,7 +47,7 @@ export default function MapContainer({
       role="region"
       aria-label="Interaktiv karta över Sverige. Använd piltangenterna för att panorera och plus/minus för att zooma."
       tabIndex={-1}
-      className="h-full w-full"
+      className="c-map__leaflet"
     >
       <LeafletMapContainer
         center={[62.0, 10.0]} // Centered over Sweden

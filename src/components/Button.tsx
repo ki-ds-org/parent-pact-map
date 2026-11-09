@@ -24,15 +24,12 @@ function Button({
   disabled = false,
 }: ButtonProps) {
   const buttonClass = classNames(
-    "border-none cursor-pointer transition-colors rounded-3xl font-semibold",
-    variant === "primary" && "bg-primary text-on-primary hover:bg-primary/80",
-    variant === "secondary" && "bg-secondary text-white", // TODO: Change to background-secondary
-    variant === "tertiary" &&
-      "bg-gray-200 text-primary border border-primary hover:bg-primary !hover:text-white",
+    "c-button",
+    `c-button--${variant}`,
     {
-      "px-4 py-2 text-base": size === "lg",
-      "px-4 py-1 text-sm": size === "sm",
-      "w-full": fullWidth,
+      "c-button--large": size === "lg",
+      "c-button--small": size === "sm",
+      "c-button--full-width": fullWidth,
     }
   );
 
