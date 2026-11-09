@@ -1,11 +1,9 @@
 import { useMemo } from "react";
 import type { Pact } from "../types/Pact";
 
-export type HeatMetric = "students" | "parents";
 export type AggregationMode = "school" | "municipality";
 
 type UseMapDataOptions = {
-  heatMetric?: HeatMetric;
   aggregation?: AggregationMode;
 };
 
@@ -81,7 +79,7 @@ export function useMapData(
   pacts: Pact[],
   options: UseMapDataOptions = {}
 ) {
-  const { heatMetric = "students", aggregation = "school" } = options;
+  const { aggregation = "school" } = options;
 
   const sourcePacts = useMemo(
     () =>
@@ -109,12 +107,10 @@ export function useMapData(
           [
             pact.coordinates[0],
             pact.coordinates[1],
-            heatMetric === "parents"
-              ? pact.parentCount
-              : pact.studentCount,
+            pact.studentCount,
           ] as [number, number, number]
       ),
-    [validPacts, heatMetric]
+    [validPacts]
   );
 
   const markerPoints = useMemo(

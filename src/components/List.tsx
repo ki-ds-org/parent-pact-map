@@ -4,30 +4,22 @@ import noFoundImage from "../assets/not-found.avif";
 
 interface ListProps {
   filteredPacts: Pact[];
-  heatMetric: "students" | "parents";
 }
 
-function List({ filteredPacts, heatMetric }: ListProps) {
+function List({ filteredPacts }: ListProps) {
   return (
     <div className="w-full h-full overflow-y-scroll bg-inherit">
       <div className="">
         <ul className="">
           {filteredPacts.map((pact, i) => {
-            const count =
-              heatMetric === "parents" ? pact.parentCount : pact.studentCount;
-            const label =
-              heatMetric === "parents"
-                ? pact.parentCount === 1
-                  ? "förälder"
-                  : "föräldrar"
-                : pact.studentCount === 1
-                  ? "elev"
-                  : "elever";
+            const parentLabel =
+              pact.parentCount === 1 ? "förälder" : "föräldrar";
+            const studentLabel = pact.studentCount === 1 ? "elev" : "elever";
             return (
               <ListItem
                 key={`${pact.id}-${i}`}
                 title={`${pact.name}`}
-                description={`${count} ${label}`}
+                description={`${pact.parentCount} ${parentLabel}, ${pact.studentCount} ${studentLabel}`}
                 link="https://ki-ds.org/foraldrapakten/ga-med"
                 callToAction="Gå med"
               />

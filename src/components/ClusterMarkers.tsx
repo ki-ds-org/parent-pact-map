@@ -5,7 +5,6 @@ import type { Pact } from "../types/Pact";
 
 interface ClusterMarkersProps {
   coordinates: [Pact, [number, number]][];
-  heatMetric: "students" | "parents";
 }
 
 export const markerIcon = new L.Icon({
@@ -18,7 +17,7 @@ export const markerIcon = new L.Icon({
   popupAnchor: [1, -34],
 });
 
-function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
+function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
   const map = useMap();
 
   useEffect(() => {
@@ -28,9 +27,7 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
         let total = childMarkers.reduce((sum: number, m: any) => {
           const pact = m._pact as Pact | undefined;
           if (!pact) return sum + 1;
-          const count =
-            heatMetric === "parents" ? pact.parentCount : pact.studentCount;
-          return sum + (count ?? 0);
+          return sum + (pact.studentCount ?? 0);
         }, 0);
         if (total === 0 && childMarkers.length > 0) {
           total = cluster.getChildCount?.() ?? childMarkers.length;
@@ -54,19 +51,16 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
       showCoverageOnHover: false,
     });
 
-    const label =
-      heatMetric === "parents"
-        ? (n: number) => (n === 1 ? "förälder" : "föräldrar")
-        : (n: number) => (n === 1 ? "elev" : "elever");
-
     coordinates.forEach(([pact, [lat, lng]]) => {
-      const count =
-        heatMetric === "parents" ? pact.parentCount : pact.studentCount;
       const marker = L.marker([lat, lng])
         .setIcon(markerIcon)
         .bindPopup(
           `<div class="text-sm">
-          <div>${pact.name} (${count} ${label(count)})</div><div>
+          <div>${pact.name} (${pact.parentCount} ${
+            pact.parentCount === 1 ? "förälder" : "föräldrar"
+          }, ${pact.studentCount} ${
+            pact.studentCount === 1 ? "elev" : "elever"
+          })</div><div>
            <a href="https://ki-ds.org/foraldrapakten/ga-med">Gå med</a>
           </div></div>`
         );
@@ -77,7 +71,7 @@ function ClusterMarkers({ coordinates, heatMetric }: ClusterMarkersProps) {
     return () => {
       map.removeLayer(markers);
     };
-  }, [coordinates, map, heatMetric]);
+  }, [coordinates, map]);
 
   return null;
 }
