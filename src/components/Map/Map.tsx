@@ -3,7 +3,6 @@ import "leaflet.heat";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import "leaflet/dist/leaflet.css";
 import { useCallback, useRef, useState } from "react";
 import { useGeolocation } from "../../hooks/useGeolocation";
 import useIsMobileView from "../../hooks/useIsMobileView";

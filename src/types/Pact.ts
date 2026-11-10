@@ -5,8 +5,6 @@ export type Pact = {
     municipality: string[];
     school?: string;
     coordinates: [number, number];
-    // TODO: Add schools back in when data is available
-    // schools: School[];
     studentCount: number;
     parentCount: number;
     contact?: string;
