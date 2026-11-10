@@ -237,7 +237,7 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
           </label>
           <input
             id="municipality-search"
-            type="search"
+            type="text"
             placeholder="Sök efter kommun"
             value={query}
             onChange={(e) => {
