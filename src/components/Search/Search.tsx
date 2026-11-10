@@ -112,9 +112,13 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
 
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
+      const root = dropdownRef.current;
+      if (!root) return;
+      const path = e.composedPath();
+      const target = path[0];
       if (
-        dropdownRef.current &&
-        !e.composedPath().includes(dropdownRef.current)
+        !path.includes(root) &&
+        !(target instanceof Node && root.contains(target))
       ) {
         setShowDropdown(false);
       }

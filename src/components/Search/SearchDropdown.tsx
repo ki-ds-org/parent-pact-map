@@ -35,8 +35,13 @@ function SearchDropdown({
             id={`municipality-option-${index}`}
             role="option"
             aria-selected={activeIndex === index}
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => onSuggestionClick(s)}
+            onMouseDown={(e) => {
+              // Select on mousedown: inside a shadow root the dropdown can be
+              // unmounted (outside-click/blur handling) before click fires.
+              e.preventDefault();
+              e.stopPropagation();
+              onSuggestionClick(s);
+            }}
             className="c-search-dropdown__option"
           >
             <div className="c-search-dropdown__primary">{primary}</div>
