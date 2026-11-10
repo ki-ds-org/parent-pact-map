@@ -31,11 +31,17 @@
     font-size: 18px;
     font-weight: bold;
     color: var(--color-white);
-    background-color: var(--color-green);
-    border-color: var(--color-green);
+    background-color: var(--color-black);
+    border-color: var(--color-black);
     border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
     height: 48px;
     padding: 0.5em 0.8em;
+
+    &:hover,
+    &:focus {
+      border-color: var(--color-green);
+      background-color: var(--color-green);
+    }
 
     @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
       height: 62px;
@@ -62,5 +68,10 @@
 
   &--full-width {
     width: 100%;
+  }
+
+  .leaflet-container & {
+    color: var(--color-black);
+    text-decoration: none;
   }
 }

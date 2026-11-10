@@ -56,11 +56,12 @@ function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
       markerPacts.set(marker, pact);
       const popup = document.createElement("div");
       popup.className = "c-marker-popup";
-      const description = document.createElement("p");
-      description.textContent = `${pact.name} (${pact.parentCount} ${
+      const description = document.createElement("div");
+      description.innerHTML = `<h3>${pact.name}</h3><p>${pact.parentCount} ${
         pact.parentCount === 1 ? "förälder" : "föräldrar"
-      }, ${pact.studentCount} ${pact.studentCount === 1 ? "elev" : "elever"})`;
+      }, ${pact.studentCount} ${pact.studentCount === 1 ? "elev" : "elever"}</p>`;
       const link = document.createElement("a");
+      link.classList.add("c-button", "c-button--primary", "c-button--small");
       link.href = getJoinUrl(pact);
       link.textContent = "Gå med";
       popup.append(description, link);

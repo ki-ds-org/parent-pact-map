@@ -1,5 +1,13 @@
 .c-marker-popup {
   font-size: 0.875rem;
+
+  h3 {
+    margin: 0;
+  }
+
+  a {
+    display: inline-block;
+  }
 }
 
 .c-map-marker-cluster {

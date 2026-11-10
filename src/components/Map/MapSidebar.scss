@@ -21,11 +21,6 @@
     flex: 1;
     flex-direction: column;
     gap: var(--gap);
-    margin-bottom: 16px;
-
-    @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
-      margin-bottom: 32px;
-    }
   }
 
   &__actions {
@@ -33,9 +28,6 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--gap);
-    font-size: 0.75rem;
-    pointer-events: auto;
   }
 
   &__location-button {
