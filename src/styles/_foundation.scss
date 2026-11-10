@@ -1,17 +1,19 @@
-#react-pact-map {
+:host {
   all: initial;
   display: block;
   width: 100%;
   box-sizing: border-box;
 }
 
-#react-pact-map *,
-#react-pact-map *::before,
-#react-pact-map *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 .react-pact-map {
+  all: initial;
+  display: block;
   min-height: 100vh;
   color: var(--color-black);
   background-color: var(--color-grey-light);

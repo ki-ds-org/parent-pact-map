@@ -3,8 +3,8 @@
 .c-button {
   font-family: Arial;
   font-weight: 400;
-  font-size: 18px !important;
-  color: var(--color-black) !important;
+  font-size: 18px;
+  color: var(--color-black);
   letter-spacing: 0.01em;
   padding-block-start: 0.8em;
   padding-block-end: 0.8em;
@@ -12,9 +12,9 @@
   padding-inline-end: 2em;
   border-radius: var(--border-radius-button);
   border-width: 2px;
-  border-color: var(--color-yellow) !important;
+  border-color: var(--color-yellow);
   border-style: solid;
-  background-color: var(--color-yellow) !important;
+  background-color: var(--color-yellow);
   transition: border-color 200ms, color 200ms, background-color 200ms;
   align-self: center;
   text-decoration: none;
@@ -23,28 +23,28 @@
 
   &--secondary {
     color: var(--color-white);
-    background-color: var(--color-green) !important;
-    border-color: var(--color-green) !important;
+    background-color: var(--color-green);
+    border-color: var(--color-green);
   }
 
   &--search {
     font-size: 18px;
     font-weight: bold;
-    color: var(--color-white) !important;
-    background-color: var(--color-black) !important;
-    border-color: var(--color-black) !important;
+    color: var(--color-white);
+    background-color: var(--color-black);
+    border-color: var(--color-black);
     border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
-    height: 48px !important;
+    height: 48px;
     padding: 0.5em 0.8em;
 
     &:hover,
     &:focus {
-      border-color: var(--color-green) !important;
-      background-color: var(--color-green) !important;
+      border-color: var(--color-green);
+      background-color: var(--color-green);
     }
 
     @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
-      height: 62px !important;
+      height: 62px;
      padding-inline: 1.6em;
     }
   }
