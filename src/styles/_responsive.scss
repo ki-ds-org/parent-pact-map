@@ -1,4 +1,4 @@
-@use "./tokens" as *;
+@use "./variables" as *;
 
 @media (min-width: $breakpoint-tablet) {
   .c-app {

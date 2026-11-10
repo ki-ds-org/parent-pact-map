@@ -1,5 +1,3 @@
-@use "./tokens" as *;
-
 .c-map {
   position: relative;
   min-width: 0;
@@ -20,8 +18,8 @@
     left: 0.5rem;
     padding: 0.5rem 1rem;
     transform: translateY(-200%);
-    color: $color-on-primary;
-    background: $color-primary;
+    color: var(--parent-pact-map-color-on-primary);
+    background: var(--parent-pact-map-color-primary);
 
     &:focus {
       transform: translateY(0);

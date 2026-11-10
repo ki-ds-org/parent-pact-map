@@ -1,5 +1,3 @@
-@use "./tokens" as *;
-
 #react-pact-map {
   all: initial;
   display: block;
@@ -15,8 +13,8 @@
 
 .react-pact-map {
   min-height: 100%;
-  color: $color-on-background;
-  background-color: $color-background;
+  color: var(--parent-pact-map-color-on-background);
+  background-color: var(--parent-pact-map-color-background);
   font-family: "Open Sans", Arial, sans-serif;
   line-height: 1.5;
 
@@ -28,12 +26,12 @@
   }
 
   h3 {
-    color: $color-on-background;
+    color: var(--parent-pact-map-color-on-background);
     font-family: "Open Sans", Arial, sans-serif;
   }
 
   a {
-    color: $color-on-primary;
+    color: var(--parent-pact-map-color-on-primary);
     text-decoration: none;
   }
 
@@ -43,7 +41,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid $color-primary;
+    outline: 3px solid var(--parent-pact-map-color-primary);
     outline-offset: 3px;
   }
 
@@ -53,7 +51,7 @@
 
   [aria-live],
   [role="status"] {
-    color: $color-on-background;
+    color: var(--parent-pact-map-color-on-background);
   }
 }
 
