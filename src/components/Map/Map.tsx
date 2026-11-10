@@ -7,7 +7,6 @@ import { useCallback, useRef, useState } from "react";
 import { useGeolocation } from "../../hooks/useGeolocation";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import { useMapData } from "../../hooks/useMapData";
-import "../../plugins/BoundaryCanvas";
 import type { Pact } from "../../types/Pact";
 import type { LocationInfo } from "../../util/searchUtils";
 import MapContainer from "./MapContainer";
