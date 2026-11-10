@@ -3,14 +3,17 @@ import "leaflet.heat";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useGeolocation } from "../../hooks/useGeolocation";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import { useMapData } from "../../hooks/useMapData";
 import type { Pact } from "../../types/Pact";
 import type { LocationInfo } from "../../util/searchUtils";
+import List from "../Results/List";
+import SearchInfo from "../Search/SearchInfo";
 import MapContainer from "./MapContainer";
 import MapSidebar from "./MapSidebar";
+import type { MapView } from "./MapViewTabs";
 
 interface MapProps {
   pacts: Pact[];
@@ -32,6 +35,7 @@ function Map({ pacts }: MapProps) {
     "school"
   );
   const [geolocationMessage, setGeolocationMessage] = useState("");
+  const [activeView, setActiveView] = useState<MapView>("map");
   const isResettingMap = useRef(false);
 
   const isMobile = useIsMobileView();
@@ -176,12 +180,34 @@ function Map({ pacts }: MapProps) {
   // Filter pacts based on visible markers' pactIds
   const visiblePactIds = new Set(visibleMarkers.map(([pact]) => pact.id));
   const filteredPacts = mapPacts.filter((pact) => visiblePactIds.has(pact.id));
+  const results = closestPacts.length > 0 ? closestPacts : filteredPacts;
+  const resultCountLabel = `${results.length} ${
+    results.length === 1 ? "pakt" : "pakter"
+  }`;
+  const searchInfoDescription =
+    searchQuery || zooming
+      ? closestPacts.length > 0
+        ? `Visar ${resultCountLabel} närmast dig.`
+        : results.length > 0
+          ? `Visar ${resultCountLabel} i det här området.`
+          : "Inga pakter hittades i området. Prova att flytta eller zooma kartan."
+      : results.length > 0
+        ? `Visar ${resultCountLabel} i kartområdet. Flytta eller zooma kartan för att uppdatera resultaten.`
+        : "Inga pakter visas i kartområdet. Flytta eller zooma kartan för att hitta pakter.";
+
+  useEffect(() => {
+    if (activeView !== "map" || !mapRef) return;
+
+    const timer = window.setTimeout(() => mapRef.invalidateSize(), 0);
+    return () => window.clearTimeout(timer);
+  }, [activeView, mapRef]);
 
   return (
     <div className="c-map">
       <a
-        href="#interactive-map"
+        href="#map-view-tab-map"
         className="c-map__skip-link"
+        onClick={() => setActiveView("map")}
       >
         Hoppa till kartan
       </a>
@@ -190,17 +216,21 @@ function Map({ pacts }: MapProps) {
           onSearch={handleSearch}
           onClearSearch={handleClearSearch}
           onFindClosest={getClosestPacts}
-          searchQuery={searchQuery}
-          zooming={zooming}
-          closestPacts={closestPacts}
-          filteredPacts={filteredPacts}
-          currentLocationInfo={currentLocationInfo}
           geolocationMessage={geolocationMessage}
           aggregation={aggregation}
           onAggregationChange={setAggregation}
+          activeView={activeView}
+          onViewChange={setActiveView}
         />
 
-        <div className="c-map__canvas">
+        <section
+          id="map-view-panel-map"
+          className="c-map-panel c-map__canvas"
+          role="tabpanel"
+          aria-labelledby="map-view-tab-map"
+          tabIndex={0}
+          hidden={activeView !== "map"}
+        >
           <MapContainer
             heatPoints={heatPoints}
             markerPoints={markerPoints}
@@ -209,8 +239,25 @@ function Map({ pacts }: MapProps) {
             onMapRef={setMapRef}
             isMobile={isMobile}
           />
-        </div>
-
+        </section>
+        <section
+          id="map-view-panel-list"
+          className="c-map-panel c-map__results"
+          role="tabpanel"
+          aria-labelledby="map-view-tab-list"
+          tabIndex={0}
+          hidden={activeView !== "list"}
+        >
+          <SearchInfo
+            title={
+              currentLocationInfo?.municipality && closestPacts.length < 1
+                ? `Sökresultat "${currentLocationInfo.municipality} Kommun"`
+                : "Sökresultat"
+            }
+            description={searchInfoDescription}
+          />
+          <List filteredPacts={results} />
+        </section>
       </div>
     </div>
   );

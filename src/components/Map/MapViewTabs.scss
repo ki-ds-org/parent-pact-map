@@ -1,0 +1,26 @@
+.c-map-view-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--color-surface-secondary);
+  border-radius: 0.5rem;
+
+  &__tab {
+    min-height: 2.75rem;
+    border: 0;
+    border-radius: 0.375rem;
+    color: var(--color-black);
+    background: transparent;
+    cursor: pointer;
+
+    &[aria-selected="true"] {
+      color: var(--color-on-primary);
+      background: var(--color-primary);
+    }
+  }
+}
+
+.c-map-panel[hidden] {
+  display: none;
+}
