@@ -1,0 +1,266 @@
+import L from "leaflet";
+import "leaflet.heat";
+import "leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useGeolocation } from "../../hooks/useGeolocation";
+import useIsMobileView from "../../hooks/useIsMobileView";
+import { useMapData } from "../../hooks/useMapData";
+import type { Pact } from "../../types/Pact";
+import type { LocationInfo } from "../../util/searchUtils";
+import List from "../Results/List";
+import SearchInfo from "../Search/SearchInfo";
+import MapContainer from "./MapContainer";
+import MapSidebar from "./MapSidebar";
+import type { MapView } from "./MapViewTabs";
+
+interface MapProps {
+  pacts: Pact[];
+}
+
+function Map({ pacts }: MapProps) {
+  const [mapRef, setMapRef] = useState<L.Map | null>(null);
+  const [visibleMarkers, setVisibleMarkers] = useState<
+    [Pact, [number, number]][]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState<[number, number] | null>(null);
+  const [zooming, setZooming] = useState(false);
+  const [closestPacts, setClosestPacts] = useState<Pact[]>([]);
+  const [currentLocationInfo, setCurrentLocationInfo] = useState<
+    LocationInfo | undefined
+  >();
+  const [isProgrammaticZoom, setIsProgrammaticZoom] = useState(false);
+  const [aggregation, setAggregation] = useState<"school" | "municipality">(
+    "school"
+  );
+  const [geolocationMessage, setGeolocationMessage] = useState("");
+  const [activeView, setActiveView] = useState<MapView>("map");
+  const isResettingMap = useRef(false);
+
+  const isMobile = useIsMobileView();
+  const { heatPoints, markerPoints, pacts: mapPacts } = useMapData(pacts, {
+    aggregation,
+  });
+  const { findClosestPacts } = useGeolocation();
+
+  const setMapViewWithLayoutDelay = useCallback(
+    (
+      coords: [number, number],
+      triggerStateChange: () => void,
+      afterLayoutChange?: () => void
+    ) => {
+      if (mapRef) {
+        triggerStateChange();
+
+        setTimeout(() => {
+          if (mapRef) {
+            setIsProgrammaticZoom(true); // Set flag before programmatic zoom
+            mapRef.invalidateSize();
+            mapRef.setView(coords, isMobile ? 10 : 11);
+            afterLayoutChange?.();
+          }
+        }, 100);
+      }
+    },
+    [mapRef, isMobile]
+  );
+
+  const handleSearch = (locationInfo: LocationInfo) => {
+    // Find the closest pact to the searched location
+    const { pacts: closestPacts } = findClosestPacts(
+      mapPacts,
+      locationInfo.coordinates[0],
+      locationInfo.coordinates[1],
+      1, // Only get the closest one
+      50 // Within 50km of the search location
+    );
+
+    // Check if the closest pact's municipality matches the search query
+    let targetCoords = locationInfo.coordinates;
+    
+    if (closestPacts.length > 0) {
+      const closestPact = closestPacts[0];
+      const searchMunicipality = locationInfo.municipality?.toLowerCase() || '';
+      
+      // Handle municipality as either string or array
+      const pactMunicipality = Array.isArray(closestPact.municipality) 
+        ? closestPact.municipality[0]?.toLowerCase() || ''
+        : (closestPact.municipality as unknown as string)?.toLowerCase() || '';
+      
+      // Only snap to pact coordinates if municipality names match
+      if (searchMunicipality && pactMunicipality && 
+          (pactMunicipality.includes(searchMunicipality) || 
+           searchMunicipality.includes(pactMunicipality))) {
+        targetCoords = closestPact.coordinates;
+      }
+    }
+
+    setMapViewWithLayoutDelay(targetCoords, () => {
+      setSearchQuery(locationInfo.coordinates);
+      setCurrentLocationInfo(locationInfo);
+      setClosestPacts([]);
+    });
+  };
+
+  const handleZooming = () => {
+    if (isResettingMap.current) return;
+
+    if (isProgrammaticZoom) {
+      setCurrentLocationInfo(undefined);
+      setIsProgrammaticZoom(false);
+    }
+
+    setZooming(true);
+    setClosestPacts([]);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery(null);
+    setCurrentLocationInfo(undefined);
+    setClosestPacts([]);
+    setZooming(false);
+    if (mapRef) {
+      isResettingMap.current = true;
+      mapRef.invalidateSize();
+      mapRef.setView([62.0, 10.0], isMobile ? 4 : 5);
+      isResettingMap.current = false;
+      setZooming(false);
+    }
+  };
+
+  const getClosestPacts = useCallback(() => {
+    if (!navigator.geolocation) {
+      setGeolocationMessage("Din webbläsare stöder inte platsdelning.");
+      return;
+    }
+
+    setGeolocationMessage("Hämtar din position...");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+
+        const { pacts: closestPacts } = findClosestPacts(
+          mapPacts,
+          userLat,
+          userLng,
+          3,
+          80
+        );
+
+        const targetCoords: [number, number] = [userLat, userLng];
+
+        setMapViewWithLayoutDelay(
+          targetCoords,
+          () => {
+            setZooming(true);
+          },
+          () => setClosestPacts(closestPacts)
+        );
+        setGeolocationMessage(
+          closestPacts.length
+            ? `Hittade ${closestPacts.length} närliggande pakter.`
+            : "Hittade inga pakter inom 80 kilometer."
+        );
+      },
+      (error) => {
+        const message =
+          error.code === error.PERMISSION_DENIED
+            ? "Platsåtkomst nekades. Tillåt platsåtkomst i webbläsaren för att hitta pakter nära dig."
+            : error.code === error.POSITION_UNAVAILABLE
+              ? "Din position kunde inte hämtas."
+              : "Det tog för lång tid att hämta din position. Försök igen.";
+        setGeolocationMessage(message);
+      },
+      { timeout: 10000 }
+    );
+  }, [mapPacts, findClosestPacts, setMapViewWithLayoutDelay]);
+
+  // Filter pacts based on visible markers' pactIds
+  const visiblePactIds = new Set(visibleMarkers.map(([pact]) => pact.id));
+  const filteredPacts = mapPacts.filter((pact) => visiblePactIds.has(pact.id));
+  const results = closestPacts.length > 0 ? closestPacts : filteredPacts;
+  const resultCountLabel = `${results.length} ${
+    results.length === 1 ? "pakt" : "pakter"
+  }`;
+  const searchInfoDescription =
+    searchQuery || zooming
+      ? closestPacts.length > 0
+        ? `Visar ${resultCountLabel} närmast dig.`
+        : results.length > 0
+          ? `Visar ${resultCountLabel} i det här området.`
+          : "Inga pakter hittades i området. Prova att flytta runt eller zooma ut kartan."
+      : results.length > 0
+        ? `Visar ${resultCountLabel} i kartområdet. Flytta runt eller zooma i kartan för att uppdatera resultaten.`
+        : "Inga pakter visas i kartområdet. Flytta runt eller zooma i kartan för att hitta pakter.";
+
+  useEffect(() => {
+    if (activeView !== "map" || !mapRef) return;
+
+    const timer = window.setTimeout(() => mapRef.invalidateSize(), 0);
+    return () => window.clearTimeout(timer);
+  }, [activeView, mapRef]);
+
+  return (
+    <div className="c-map">
+      <a
+        href="#map-view-tab-map"
+        className="c-map__skip-link"
+        onClick={() => setActiveView("map")}
+      >
+        Hoppa till kartan
+      </a>
+      <div className="c-map__content">
+        <MapSidebar
+          onSearch={handleSearch}
+          onClearSearch={handleClearSearch}
+          onFindClosest={getClosestPacts}
+          geolocationMessage={geolocationMessage}
+          aggregation={aggregation}
+          onAggregationChange={setAggregation}
+          activeView={activeView}
+          onViewChange={setActiveView}
+        />
+
+        <section
+          id="map-view-panel-map"
+          className="c-map-panel c-map__canvas"
+          role="tabpanel"
+          aria-labelledby="map-view-tab-map"
+          tabIndex={0}
+          hidden={activeView !== "map"}
+        >
+          <MapContainer
+            heatPoints={heatPoints}
+            markerPoints={markerPoints}
+            onVisibleChange={setVisibleMarkers}
+            onZoomStart={handleZooming}
+            onMapRef={setMapRef}
+            isMobile={isMobile}
+          />
+        </section>
+        <section
+          id="map-view-panel-list"
+          className="c-map-panel c-map__results"
+          role="tabpanel"
+          aria-labelledby="map-view-tab-list"
+          tabIndex={0}
+          hidden={activeView !== "list"}
+        >
+          <SearchInfo
+            title={
+              currentLocationInfo?.municipality && closestPacts.length < 1
+                ? `Sökresultat "${currentLocationInfo.municipality} Kommun"`
+                : "Sökresultat"
+            }
+            description={searchInfoDescription}
+          />
+          <List filteredPacts={results} />
+        </section>
+      </div>
+    </div>
+  );
+}
+
+export default Map;

@@ -1,0 +1,58 @@
+@use "../../styles/breakpoints" as breakpoints;
+
+.c-search {
+  position: relative;
+  z-index: 50;
+  width: 100%;
+  pointer-events: auto;
+
+  &__form {
+    display: flex;
+      flex-direction: row;
+    width: 100%;
+  }
+
+  &__field {
+    position: relative;
+    width: 100%;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 1em;
+    border: 2px solid var(--color-black);
+      border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
+    color: var(--color-black);
+    background: var(--color-white);
+    height: 48px;
+    font-size: 18px;
+
+    @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
+      padding: 1.6em;
+    }
+
+    &::placeholder {
+      color: var(--color-grey-60);
+    }
+
+    &:focus {
+      border-color: transparent;
+      outline: 2px solid #3b82f6;
+      outline-offset: 1px;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    z-index: 50;
+    top: 100%;
+    right: 0;
+    left: 0;
+    max-height: 12rem;
+    overflow-y: auto;
+    border: 1px solid #666;
+    border-radius: 0.375rem;
+    background: var(--color-grey-light);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.25);
+  }
+}

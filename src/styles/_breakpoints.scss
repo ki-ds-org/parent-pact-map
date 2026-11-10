@@ -1,0 +1,13 @@
+$breakpoint-tablet: 768px;
+
+@mixin respond-to($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin respond-from($breakpoint) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}

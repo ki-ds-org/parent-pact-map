@@ -4,7 +4,6 @@ import { logInfo } from "../util/log";
 
 interface GeolocationResult {
   pacts: Pact[];
-  closestSchool: Pact | null;
 }
 
 export function useGeolocation() {
@@ -36,8 +35,6 @@ export function useGeolocation() {
   ): GeolocationResult => {
     const pactsWithDistances = pacts.map((pact) => {
       let minDistance = Infinity;
-      let closestSchool = null;
-
       if (pact.coordinates) {
         const distance = calculateDistance(
           userLat,
@@ -48,7 +45,7 @@ export function useGeolocation() {
         minDistance = distance;
       }
 
-      return { pact, distance: minDistance, closestSchool };
+      return { pact, distance: minDistance };
     });
 
     const closestPacts = pactsWithDistances
@@ -59,15 +56,9 @@ export function useGeolocation() {
       })
       .map((item) => item.pact);
 
-    const mainPact = closestPacts[0];
-    const closestSchool = pactsWithDistances.find(
-      (pact) => pact.pact.id === mainPact?.id
-    )?.closestSchool as Pact | null;
-
     logInfo("Closest pacts:", closestPacts);
-    logInfo("Closest school:", closestSchool);
 
-    return { pacts: closestPacts, closestSchool };
+    return { pacts: closestPacts };
   }, [calculateDistance]);
 
   return {
