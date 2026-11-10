@@ -1,7 +1,7 @@
 import L from "leaflet";
 import { useEffect, useRef } from "react";
 import { MapContainer as LeafletMapContainer, TileLayer } from "react-leaflet";
-import type { Pact } from "../types/Pact";
+import type { Pact } from "../../types/Pact";
 import ClusterMarkers from "./ClusterMarkers";
 import HeatmapLayer from "./HeatmapLayer";
 import VisibleMarkerTracker from "./VisibleMarkerTracker";

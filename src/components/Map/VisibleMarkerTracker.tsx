@@ -1,7 +1,7 @@
 // VisibleMarkerTracker.tsx
 import { useMap } from "react-leaflet";
 import { useEffect, useRef } from "react";
-import type { Pact } from "../types/Pact";
+import type { Pact } from "../../types/Pact";
 
 interface VisibleMarkerTrackerProps {
   allMarkers: [Pact, [number, number]][];

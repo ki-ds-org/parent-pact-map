@@ -1,7 +1,7 @@
-import type { Pact } from "../types/Pact";
+import type { Pact } from "../../types/Pact";
 import ListItem from "./ListItem";
-import noFoundImage from "../assets/not-found.avif";
-import { getJoinUrl } from "../util/joinUrl";
+import noFoundImage from "../../assets/not-found.avif";
+import { getJoinUrl } from "../../util/joinUrl";
 
 interface ListProps {
   filteredPacts: Pact[];

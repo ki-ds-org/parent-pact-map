@@ -1,12 +1,12 @@
 import { MapPinIcon } from "@heroicons/react/24/outline";
-import type { Pact } from "../types/Pact";
-import type { LocationInfo } from "../util/searchUtils";
-import List from "./List";
-import Pill from "./Pill";
-import Search from "./Search";
-import SearchInfo from "./SearchInfo";
-import SegmentedToggle from "./SegmentedToggle";
-import { config } from "../config/env";
+import type { Pact } from "../../types/Pact";
+import type { LocationInfo } from "../../util/searchUtils";
+import List from "../Results/List";
+import Pill from "../Controls/Pill";
+import Search from "../Search/Search";
+import SearchInfo from "../Search/SearchInfo";
+import SegmentedToggle from "../Controls/SegmentedToggle";
+import { config } from "../../config/env";
 
 interface MapSidebarProps {
   onSearch: (locationInfo: LocationInfo) => void;

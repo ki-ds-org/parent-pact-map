@@ -1,6 +1,6 @@
-import type { Pact } from "../types/Pact";
-import List from "./List";
-import SearchInfo from "./SearchInfo";
+import type { Pact } from "../../types/Pact";
+import List from "../Results/List";
+import SearchInfo from "../Search/SearchInfo";
 
 interface MobileListProps {
   searchQuery: [number, number] | null;

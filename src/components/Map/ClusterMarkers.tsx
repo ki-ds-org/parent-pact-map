@@ -1,9 +1,9 @@
 import { useMap } from "react-leaflet";
 import { useEffect } from "react";
 import L from "leaflet";
-import type { Pact } from "../types/Pact";
-import { getJoinUrl } from "../util/joinUrl";
-import markerIcon from "../util/markerIcon";
+import type { Pact } from "../../types/Pact";
+import { getJoinUrl } from "../../util/joinUrl";
+import markerIcon from "../../util/markerIcon";
 
 interface ClusterMarkersProps {
   coordinates: [Pact, [number, number]][];

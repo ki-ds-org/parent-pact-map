@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import Button from "./Button";
-import { useDebounce } from "../hooks/useDebounce";
-import { useGoogleMapsInit } from "../hooks/useGoogleMapsInit";
+import Button from "../Controls/Button";
+import { useDebounce } from "../../hooks/useDebounce";
+import { useGoogleMapsInit } from "../../hooks/useGoogleMapsInit";
 import {
   resolveSuggestionToCoords,
   geocodeAddress,
   type LocationInfo,
-} from "../util/searchUtils";
-import { fetchSuggestions } from "../util/suggestionsFetcher";
-import { MIN_QUERY_LENGTH, DEBOUNCE_DELAY } from "../config/searchConfig";
-import type { Suggestion } from "../types/SearchTypes";
+} from "../../util/searchUtils";
+import { fetchSuggestions } from "../../util/suggestionsFetcher";
+import { MIN_QUERY_LENGTH, DEBOUNCE_DELAY } from "../../config/searchConfig";
+import type { Suggestion } from "../../types/SearchTypes";
 import SearchDropdown from "./SearchDropdown";
 
 interface SearchProps {

@@ -1,10 +1,9 @@
 @use "./styles/variables";
 @use "./styles/foundation";
-@use "./styles/app";
-@use "./styles/map-layout";
-@use "./styles/search";
-@use "./styles/controls";
-@use "./styles/results";
-@use "./styles/header-markers";
-@use "./styles/responsive";
+@use "./components/App/App";
+@use "./components/Map/Map";
+@use "./components/Search/Search";
+@use "./components/Controls/Controls";
+@use "./components/Results/Results";
+@use "./components/Header/Header";
 @use "./styles/motion";

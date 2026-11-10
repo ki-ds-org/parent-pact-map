@@ -1,4 +1,4 @@
-import type { Suggestion } from "../types/SearchTypes";
+import type { Suggestion } from "../../types/SearchTypes";
 
 interface SearchDropdownProps {
   activeIndex: number;

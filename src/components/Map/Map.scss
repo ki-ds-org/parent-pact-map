@@ -1,3 +1,5 @@
+@use "../../styles/breakpoints" as *;
+
 .c-map {
   position: relative;
   max-width: var(--max-width);
@@ -89,6 +91,71 @@
   }
 
   &__results {
+    display: none;
+  }
+}
+
+.c-mobile-results {
+  width: 100%;
+  border: 1px solid var(--color-primary);
+  border-radius: 0 0 0.5rem 0.5rem;
+  pointer-events: auto;
+}
+
+.c-marker-popup {
+  font-size: 0.875rem;
+}
+
+.c-map-marker-cluster {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  background-color: #444;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .c-map {
+    &__content {
+      flex-direction: row;
+      padding: 0;
+    }
+
+    &__canvas {
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      width: 50%;
+      height: 80vh;
+      height: 80svh;
+      min-height: 0;
+      border-radius: 0.5rem;
+    }
+  }
+
+  .c-sidebar {
+    width: 50%;
+
+    &__heading {
+      padding: 0 0.5rem;
+    }
+
+    &__controls {
+      flex: none;
+      padding: 0.5rem;
+    }
+
+    &__results {
+      display: block;
+    }
+  }
+
+  .c-mobile-results {
     display: none;
   }
 }

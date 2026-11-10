@@ -1,6 +1,6 @@
-import Map from "./components/Map";
-import Button from "./components/Button";
-import usePacts from "./hooks/usePacts";
+import Map from "../Map/Map";
+import Button from "../Controls/Button";
+import usePacts from "../../hooks/usePacts";
 
 function App() {
   const { pacts, loading, error, retry } = usePacts();

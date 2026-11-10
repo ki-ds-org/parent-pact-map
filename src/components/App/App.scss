@@ -1,3 +1,5 @@
+@use "../../styles/breakpoints" as *;
+
 .c-app {
   width: 100%;
   padding-inline: var(--outer-margin);
@@ -41,5 +43,25 @@
 @keyframes c-app-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .c-app {
+    &__spinner {
+      width: 10rem;
+      height: 10rem;
+    }
+
+    &__loading-message {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+@media (min-width: 640px) {
+  .c-app__spinner {
+    width: 8rem;
+    height: 8rem;
   }
 }
