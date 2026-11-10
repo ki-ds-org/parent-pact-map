@@ -1,5 +1,4 @@
 import Button from "../Controls/Button";
-import Pill from "../Controls/Pill";
 
 interface ListItemProps {
   title: string;
