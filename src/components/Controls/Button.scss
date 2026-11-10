@@ -34,7 +34,7 @@
     background-color: var(--color-black) !important;
     border-color: var(--color-black) !important;
     border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
-    height: 48px;
+    height: 48px !important;
     padding: 0.5em 0.8em;
 
     &:hover,
@@ -44,7 +44,7 @@
     }
 
     @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
-      height: 62px;
+      height: 62px !important;
      padding-inline: 1.6em;
     }
   }
