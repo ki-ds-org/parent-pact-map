@@ -11,7 +11,6 @@ interface ListItemProps {
 function ListItem({
   title,
   description,
-  pills,
   link,
   callToAction,
 }: ListItemProps) {
