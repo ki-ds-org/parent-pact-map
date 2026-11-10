@@ -46,23 +46,3 @@
     transform: rotate(360deg);
   }
 }
-
-@include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
-  .c-app {
-    &__spinner {
-      width: 10rem;
-      height: 10rem;
-    }
-
-    &__loading-message {
-      font-size: 1.5rem;
-    }
-  }
-}
-
-@include breakpoints.respond-from(640px) {
-  .c-app__spinner {
-    width: 8rem;
-    height: 8rem;
-  }
-}

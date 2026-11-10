@@ -1,6 +1,5 @@
 import type { Pact } from "../../types/Pact";
 import ListItem from "./ListItem";
-import noFoundImage from "../../assets/not-found.avif";
 import { getJoinUrl } from "../../util/joinUrl";
 
 interface ListProps {
@@ -30,29 +29,19 @@ function List({ filteredPacts }: ListProps) {
         {filteredPacts.length === 0 && (
           <div className="c-results__empty">
             <div className="c-results__empty-content">
-              <div className="c-results__empty-image-wrap">
-                <img
-                  src={noFoundImage}
-                  alt=""
-                  className="c-results__empty-image"
-                />
-              </div>
               <div className="c-results__empty-copy">
-                <h3 className="c-results__empty-title">
-                  Ingen pakt hittades
-                </h3>
                 <p className="c-results__empty-description">
-                  Prova att flytta eller zooma kartan, eller sök efter en annan
-                  kommun. Du kan också skapa en lokal pakt.
+                  Hittar du ingen pakt där du bor? Då kan ni bli först med att starta en! 
+                  Bli den första familjen i ert område som väljer att vänta med smartphone – och hjälp fler familjer att göra samma val!
                 </p>
               </div>
             </div>
             <div className="c-results__empty-action">
               <a
                 href="https://ki-ds.org/foraldrapakten/ga-med"
-                className="c-results__create-link"
+                className="c-button"
               >
-                Skapa er lokala pakt!
+                Skapa en lokal pakt
               </a>
             </div>
           </div>

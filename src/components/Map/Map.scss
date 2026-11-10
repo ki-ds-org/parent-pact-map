@@ -12,10 +12,6 @@
     flex: 1;
     flex-direction: column;
     gap: var(--gap);
-
-    @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
-      flex-direction: row;
-    }
   }
 
   &__skip-link {
@@ -37,7 +33,6 @@
     position: relative;
     z-index: 10;
     min-width: 0;
-    min-height: 15rem;
     height: 80vh;
     height: 80svh;
     overflow: hidden;
@@ -45,19 +40,17 @@
     margin-inline: calc(-1 * var(--outer-margin));
 
     @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {   
-        position: sticky;
-        top: 0;
-        align-self: flex-start;
-        width: 50%;
-        height: 80vh;
-        height: 80svh;
-        min-height: 0;
-        margin: 0;
+        width: 100%;
+        margin-inline: 0;
+        height: 60vh;
+        height: 60svh;
     }
   }
 
   &__results {
     width: 100%;
+    max-width: 770px;
+    margin-inline: auto;
   }
 
   &__leaflet {

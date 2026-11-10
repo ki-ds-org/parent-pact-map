@@ -190,10 +190,10 @@ function Map({ pacts }: MapProps) {
         ? `Visar ${resultCountLabel} närmast dig.`
         : results.length > 0
           ? `Visar ${resultCountLabel} i det här området.`
-          : "Inga pakter hittades i området. Prova att flytta eller zooma kartan."
+          : "Inga pakter hittades i området. Prova att flytta runt eller zooma ut kartan."
       : results.length > 0
-        ? `Visar ${resultCountLabel} i kartområdet. Flytta eller zooma kartan för att uppdatera resultaten.`
-        : "Inga pakter visas i kartområdet. Flytta eller zooma kartan för att hitta pakter.";
+        ? `Visar ${resultCountLabel} i kartområdet. Flytta runt eller zooma i kartan för att uppdatera resultaten.`
+        : "Inga pakter visas i kartområdet. Flytta runt eller zooma i kartan för att hitta pakter.";
 
   useEffect(() => {
     if (activeView !== "map" || !mapRef) return;

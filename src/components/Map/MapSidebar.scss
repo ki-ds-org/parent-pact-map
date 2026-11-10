@@ -2,7 +2,8 @@
 
 .c-sidebar {
   width: 100%;
-  min-width: 0;
+  max-width: 770px;
+  margin-inline: auto;
 
   &__title {
     font-weight: 400;
