@@ -114,7 +114,7 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
     const onDocClick = (e: MouseEvent) => {
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
+        !e.composedPath().includes(dropdownRef.current)
       ) {
         setShowDropdown(false);
       }
