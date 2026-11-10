@@ -72,17 +72,13 @@ This will build the project and push the contents of the dist/ folder to the Git
 The live app will be available at:
 👉[https://ki-ds-org.github.io/parent-pact-map](https://ki-ds-org.github.io/parent-pact-map)
 
-> **Note:** The Vite config (`vite.config.ts`) is customized to output static filenames (`index.js`, `index.css`) to ensure the embed code stays stable across deployments.
+> **Note:** The Vite config (`vite.config.ts`) is customized to output a static `index.js` filename so the embed code stays stable across deployments. App styles are included in the script and scoped inside a Shadow DOM.
 
 ## 💡 Embedding in WordPress
 
 To embed the widget into a WordPress page (e.g., using an Elementor HTML widget), paste the following code:
 
 ```html
-<link
-  rel="stylesheet"
-  href="https://ki-ds-org.github.io/parent-pact-map/assets/index.css"
-/>
 <div id="react-widget" style="width: 100%;">
   <div id="react-pact-map"></div>
 </div>
@@ -93,16 +89,13 @@ To embed the widget into a WordPress page (e.g., using an Elementor HTML widget)
 
 - `#react-widget`: optional outer wrapper that controls width (can be styled in Elementor).
 - `#react-pact-map`: the element the React app mounts into (see `main.tsx`).
+- No stylesheet link is needed; the app injects its styles into its Shadow DOM so host-page CSS does not affect the widget.
 - The widget grows with its results so the page scrolls instead of the widget. On desktop, the map stays visible alongside the results while scrolling. Leave the wrapper height automatic and avoid placing it inside a height-constrained or scrolling container, which can prevent the map from sticking.
-- The static filenames (`index.js`, `index.css`) allow editors to embed once and avoid updates after every deploy.
+- The static `index.js` filename allows editors to embed once and avoid updates after every deploy.
 
 ## 🧩 React App Mount Point
 
-In `main.tsx`, the app is mounted to the inner container:
-
-```ts
-ReactDOM.createRoot(document.getElementById("react-pact-map")!).render(<App />);
-```
+In `main.tsx`, the app attaches a Shadow DOM to `#react-pact-map` and mounts React inside it.
 
 ## 🚀 Cache Busting (Optional)
 
