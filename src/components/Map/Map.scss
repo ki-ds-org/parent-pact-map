@@ -10,8 +10,6 @@
     width: 100%;
     min-width: 0;
     flex: 1;
-    flex-direction: column;
-    padding: 1rem;
   }
 
   &__skip-link {
@@ -47,6 +45,13 @@
   }
 }
 
+@include breakpoints.respond-to(breakpoints.$breakpoint-tablet - 1px) {
+  .c-map__content {
+    flex-direction: column;
+    padding: 1rem;
+  }
+}
+
 @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
   .c-map {
     &__content {
@@ -65,5 +70,4 @@
       border-radius: 0.5rem;
     }
   }
-
 }
