@@ -1,32 +1,25 @@
+@use "../../styles/breakpoints" as breakpoints;
+
 .c-result {
   display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-
-  &__heading {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
+  gap: var(--gap);
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--color-grey-25);
+  margin-bottom: 16px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
 
   &__title {
-    min-width: 0;
-    overflow-wrap: anywhere;
-    font-size: 1.125rem;
-    font-weight: 500;
-  }
-
-  &__body {
-    flex: 1;
+    margin: 0 0 0.2em;
+    font-size: 16px;
+    line-height: 1.2;
   }
 
   &__description {
-    display: flex;
-    gap: 0.25rem;
-    font-size: 0.875rem;
+    font-size: 14px;
+    line-height: 1.2;
+    margin: 0 0 0.2em;
   }
 
   &__tags {

@@ -14,7 +14,7 @@ export default function SearchInfo({
       aria-live="polite"
       aria-atomic="true"
     >
-      <h2 className="c-search-info__title">{title}</h2>
+      <h2 className="c-search-info__title u-visually-hidden">{title}</h2>
       <p className="c-search-info__description">{description}</p>
     </div>
   );

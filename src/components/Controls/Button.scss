@@ -1,3 +1,5 @@
+@use "../../styles/breakpoints" as breakpoints;
+
 .c-button {
   font-family: Arial;
   font-weight: 400;
@@ -15,7 +17,9 @@
   background-color: var(--color-yellow);
   transition: border-color 200ms, color 200ms, background-color 200ms;
   align-self: center;
+  text-decoration: none;
   cursor: pointer;
+  white-space: nowrap;
 
   &--secondary {
     color: var(--color-white);
@@ -29,8 +33,14 @@
     color: var(--color-white);
     background-color: var(--color-green);
     border-color: var(--color-green);
-    border-radius: 0 var(--border-radius-button) var(--border-radius-small) 0 0;
-    height: 62px;
+    border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+    height: 48px;
+    padding: 0.5em 0.8em;
+
+    @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
+      height: 62px;
+    padding: 1.6m;
+    }
   }
 
   &:hover,

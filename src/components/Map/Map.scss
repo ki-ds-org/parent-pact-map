@@ -11,7 +11,11 @@
     min-width: 0;
     flex: 1;
     flex-direction: column;
-    padding: 1rem;
+    gap: var(--gap);
+
+    @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
+      flex-direction: row;
+    }
   }
 
   &__skip-link {
@@ -39,31 +43,21 @@
     height: 50svh;
     overflow: hidden;
     border-radius: 0.5rem 0.5rem 0 0;
+
+    @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {   
+          position: sticky;
+          top: 0;
+          align-self: flex-start;
+          width: 50%;
+          height: 80vh;
+          height: 80svh;
+          min-height: 0;
+          border-radius: 0.5rem;
+    }
   }
 
   &__leaflet {
     width: 100%;
     height: 100%;
   }
-}
-
-@include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
-  .c-map {
-    &__content {
-      flex-direction: row;
-      padding: 0;
-    }
-
-    &__canvas {
-      position: sticky;
-      top: 0;
-      align-self: flex-start;
-      width: 50%;
-      height: 80vh;
-      height: 80svh;
-      min-height: 0;
-      border-radius: 0.5rem;
-    }
-  }
-
 }
