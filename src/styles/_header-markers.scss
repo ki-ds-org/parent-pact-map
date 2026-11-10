@@ -1,0 +1,39 @@
+.c-header {
+  width: 100%;
+  height: 100%;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__title {
+    margin-top: 1rem !important;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  &__description {
+    font-size: 0.875rem;
+  }
+}
+
+.c-marker-popup {
+  font-size: 0.875rem;
+}
+
+.c-map-marker-cluster {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  background-color: #444;
+  font-size: 12px;
+  font-weight: bold;
+}
