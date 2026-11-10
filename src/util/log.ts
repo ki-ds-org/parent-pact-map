@@ -1,5 +1,5 @@
-const logInfo = (...args: any[]) => {
-    console.info("[ParentPactMap | INFO]", ...args);
+const logInfo = (...args: unknown[]) => {
+  console.info("[ParentPactMap | INFO]", ...args);
 };
 
 export { logInfo };

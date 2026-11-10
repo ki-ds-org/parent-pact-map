@@ -10,9 +10,11 @@ function HeatmapLayer({ points }: HeatmapLayerProps) {
   const map = useMap();
 
   useEffect(() => {
-    const heatLayer = (L as any)
-      .heatLayer(points, { radius: 10, max: 1, minOpacity: 0.4 })
-      .addTo(map);
+    const heatLayer = L.heatLayer(points, {
+      radius: 10,
+      max: 1,
+      minOpacity: 0.4,
+    }).addTo(map);
     return () => {
       map.removeLayer(heatLayer);
     };

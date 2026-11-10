@@ -8,8 +8,8 @@ const SwedenMapMaskLayer = () => {
   useEffect(() => {
     fetch("/parent-pact-map/swedengeo2.json")
       .then((res) => res.json())
-      .then((swedenGeoJson) => {
-        const boundaryLayer = new (L as any).TileLayer.BoundaryCanvas(
+      .then((swedenGeoJson: GeoJSON.GeoJsonObject) => {
+        const boundaryLayer = new L.TileLayer.BoundaryCanvas(
           "https://maps.geoapify.com/v1/tile/osm-bright-smooth/{z}/{x}/{y}.png?apiKey=c7be631f429d488f953709566022593d",
           {
             boundary: swedenGeoJson,

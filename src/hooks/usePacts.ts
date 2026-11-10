@@ -2,6 +2,61 @@ import { useEffect, useState } from "react";
 import { config } from "../config/env";
 import type { Pact } from "../types/Pact";
 
+interface PactApiSchool {
+  id: string;
+  school: string;
+  coordinates: [number, number];
+  studentCount?: number;
+  parentCount?: number;
+  contact?: string;
+}
+
+interface PactApiMunicipality {
+  municipality: string;
+  schools?: PactApiSchool[];
+}
+
+interface PactApiResponse {
+  municipalities: PactApiMunicipality[];
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function isSchool(value: unknown): value is PactApiSchool {
+  if (!isRecord(value)) return false;
+  const coordinates = value.coordinates;
+  return (
+    typeof value.id === "string" &&
+    typeof value.school === "string" &&
+    Array.isArray(coordinates) &&
+    coordinates.length === 2 &&
+    coordinates.every((coordinate) => typeof coordinate === "number") &&
+    (value.studentCount === undefined ||
+      typeof value.studentCount === "number") &&
+    (value.parentCount === undefined || typeof value.parentCount === "number") &&
+    (value.contact === undefined || typeof value.contact === "string")
+  );
+}
+
+function isMunicipality(value: unknown): value is PactApiMunicipality {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.municipality === "string" &&
+    (value.schools === undefined ||
+      (Array.isArray(value.schools) && value.schools.every(isSchool)))
+  );
+}
+
+function isPactApiResponse(value: unknown): value is PactApiResponse {
+  return (
+    isRecord(value) &&
+    Array.isArray(value.municipalities) &&
+    value.municipalities.every(isMunicipality)
+  );
+}
+
 function usePacts(): {
   pacts: Pact[];
   loading: boolean;
@@ -22,12 +77,7 @@ function usePacts(): {
         return res.json();
       })
       .then((data: unknown) => {
-        if (
-          typeof data !== "object" ||
-          data === null ||
-          !("municipalities" in data) ||
-          !Array.isArray(data.municipalities)
-        ) {
+        if (!isPactApiResponse(data)) {
           setError("Unexpected API response format");
           setPacts([]);
           return;
@@ -41,9 +91,8 @@ function usePacts(): {
         // Flatten municipalities and schools into the Pact shape
         // expected by the rest of the app.
         const pacts: Pact[] = data.municipalities.flatMap(
-          (muni: any) =>
-            Array.isArray(muni.schools)
-              ? muni.schools.map((school: any): Pact => ({
+          (muni) =>
+            muni.schools?.map((school): Pact => ({
                   id: school.id,
                   name: school.school,
                   municipality: [muni.municipality],
@@ -52,8 +101,7 @@ function usePacts(): {
                   studentCount: school.studentCount ?? 0,
                   parentCount: school.parentCount ?? 0,
                   contact: school.contact,
-                }))
-              : []
+                })) ?? []
         );
 
         setPacts(pacts);

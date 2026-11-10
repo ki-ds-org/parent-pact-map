@@ -1,7 +1,7 @@
 import { useMapEvent } from "react-leaflet";
 
 const ZoomStartListener = ({ onZoomStart }: { onZoomStart: () => void }) => {
-  useMapEvent("zoomstart", (_e) => {
+  useMapEvent("zoomstart", () => {
     onZoomStart();
   });
   return null;

@@ -15,11 +15,6 @@ import MapContainer from "./MapContainer";
 import MapSidebar from "./MapSidebar";
 import MobileList from "./MobileList";
 
-// Extend Leaflet namespace to include markerClusterGroup
-declare module "leaflet" {
-  function markerClusterGroup(options?: any): any;
-}
-
 interface MapProps {
   pacts: Pact[];
 }
@@ -145,7 +140,7 @@ function Map({ pacts }: MapProps) {
         const userLat = position.coords.latitude;
         const userLng = position.coords.longitude;
 
-        const { pacts: closestPacts, closestSchool } = findClosestPacts(
+        const { pacts: closestPacts } = findClosestPacts(
           mapPacts,
           userLat,
           userLng,
@@ -153,9 +148,7 @@ function Map({ pacts }: MapProps) {
           80
         );
 
-        const targetCoords: [number, number] = closestSchool
-          ? [closestSchool.coordinates[0], closestSchool.coordinates[1]]
-          : [userLat, userLng];
+        const targetCoords: [number, number] = [userLat, userLng];
 
         setMapViewWithLayoutDelay(
           targetCoords,

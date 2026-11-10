@@ -1,5 +1,4 @@
-/// <reference path="../types/google-maps.d.ts" />
-import type { Suggestion } from '../types/SearchTypes';
+import type { Suggestion } from "../types/SearchTypes";
 
 export interface LocationInfo {
   coordinates: [number, number];
@@ -12,29 +11,31 @@ export interface LocationInfo {
  * @param addressComponents - Array of address components from Google Places API
  * @returns Municipality name or undefined if not found
  */
-export const extractMunicipality = (addressComponents: any[]): string | undefined => {
-  if (!addressComponents || !Array.isArray(addressComponents)) {
-    return undefined;
-  }
+type AddressComponent =
+  | google.maps.GeocoderAddressComponent
+  | google.maps.places.AddressComponent;
 
-  // Debug: Log all address components to understand the structure
-  // console.log('Address components:', addressComponents);
-
-  // In Sweden, municipalities are typically administrative_area_level_2
-  // or sometimes locality for smaller municipalities
-  // postal_town is often more reliable for municipality names
+export const extractMunicipality = (
+  addressComponents: AddressComponent[]
+): string | undefined => {
   const municipalityComponent = addressComponents.find(
-    (component) => 
-      component.types?.includes('administrative_area_level_2') ||
-      component.types?.includes('locality') ||
-      component.types?.includes('postal_town')
+    (component) =>
+      component.types.includes("administrative_area_level_2") ||
+      component.types.includes("locality") ||
+      component.types.includes("postal_town")
   );
 
   if (municipalityComponent) {
-    const municipality = municipalityComponent.longText || municipalityComponent.shortText || municipalityComponent.long_name;
-    return municipality;
+    if ("longText" in municipalityComponent) {
+      return (
+        municipalityComponent.longText ??
+        municipalityComponent.shortText ??
+        undefined
+      );
+    }
+    return municipalityComponent.long_name || municipalityComponent.short_name;
   }
-  
+
   return undefined;
 };
 
@@ -47,33 +48,30 @@ export const resolveSuggestionToCoords = async (
   await place.fetchFields({
     fields: ["location", "formattedAddress", "displayName", "addressComponents"],
   });
-  
-  const loc: any = place.location;
+
+  const loc = place.location;
   if (!loc) return null;
-  
-  const lat = typeof loc.lat === "function" ? loc.lat() : loc.lat;
-  const lng = typeof loc.lng === "function" ? loc.lng() : loc.lng;
-  
+
   // Extract municipality from address components
   const municipality = extractMunicipality(place.addressComponents || []);
-  
+
   return {
-    coordinates: [lat, lng],
+    coordinates: [loc.lat(), loc.lng()],
     municipality,
-    formattedAddress: place.formattedAddress || undefined
+    formattedAddress: place.formattedAddress || undefined,
   };
 };
 
 export const geocodeAddress = async (
   address: string,
-  geocoder: any
+  geocoder: google.maps.Geocoder | null
 ): Promise<LocationInfo | null> => {
   if (!geocoder) return null;
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     geocoder.geocode(
       { address, componentRestrictions: { country: "se" } },
-      (results: any, status: any) => {
+      (results, status) => {
         if (status === "OK" && results?.[0]) {
           const result = results[0];
           const loc = result.geometry.location;
@@ -86,8 +84,10 @@ export const geocodeAddress = async (
             municipality,
             formattedAddress: result.formatted_address
           });
-        } else {
+        } else if (status === "ZERO_RESULTS") {
           resolve(null);
+        } else {
+          reject(new Error(`Geocoding failed: ${status}`));
         }
       }
     );

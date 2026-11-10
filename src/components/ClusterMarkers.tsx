@@ -3,35 +3,27 @@ import { useEffect } from "react";
 import L from "leaflet";
 import type { Pact } from "../types/Pact";
 import { getJoinUrl } from "../util/joinUrl";
+import markerIcon from "../util/markerIcon";
 
 interface ClusterMarkersProps {
   coordinates: [Pact, [number, number]][];
 }
 
-export const markerIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-});
-
 function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
   const map = useMap();
 
   useEffect(() => {
+    const markerPacts = new WeakMap<L.Marker, Pact>();
     const markers = L.markerClusterGroup({
-      iconCreateFunction: (cluster: any) => {
-        const childMarkers = cluster.getAllChildMarkers?.() ?? [];
-        let total = childMarkers.reduce((sum: number, m: any) => {
-          const pact = m._pact as Pact | undefined;
+      iconCreateFunction: (cluster) => {
+        const childMarkers = cluster.getAllChildMarkers();
+        let total = childMarkers.reduce((sum, marker) => {
+          const pact = markerPacts.get(marker);
           if (!pact) return sum + 1;
           return sum + (pact.studentCount ?? 0);
         }, 0);
         if (total === 0 && childMarkers.length > 0) {
-          total = cluster.getChildCount?.() ?? childMarkers.length;
+          total = cluster.getChildCount();
         }
 
         let color = "#757575";
@@ -61,6 +53,7 @@ function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
           pact.parentCount === 1 ? "förälder" : "föräldrar"
         }, ${pact.studentCount} ${pact.studentCount === 1 ? "elev" : "elever"}`,
       }).setIcon(markerIcon);
+      markerPacts.set(marker, pact);
       const popup = document.createElement("div");
       popup.className = "c-marker-popup";
       const description = document.createElement("p");
@@ -72,7 +65,6 @@ function ClusterMarkers({ coordinates }: ClusterMarkersProps) {
       link.textContent = "Gå med";
       popup.append(description, link);
       marker.bindPopup(popup);
-      (marker as any)._pact = pact;
       markers.addLayer(marker);
     });
     map.addLayer(markers);
