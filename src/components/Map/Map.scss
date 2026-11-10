@@ -61,3 +61,30 @@
     height: 100%;
   }
 }
+
+@include breakpoints.respond-to(breakpoints.$breakpoint-tablet - 1px) {
+  .c-map__content {
+    flex-direction: column;
+    padding: 1rem;
+  }
+}
+
+@include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
+  .c-map {
+    &__content {
+      flex-direction: row;
+      padding: 0;
+    }
+
+    &__canvas {
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      width: 50%;
+      height: 80vh;
+      height: 80svh;
+      min-height: 0;
+      border-radius: 0.5rem;
+    }
+  }
+}

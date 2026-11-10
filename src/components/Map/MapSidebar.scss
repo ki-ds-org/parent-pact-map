@@ -51,7 +51,7 @@
   }
 
   &__results {
-    display: none;
+    display: block;
   }
 }
 
@@ -61,10 +61,6 @@
 
     &__controls {
       flex: none;
-    }
-
-    &__results {
-      display: block;
     }
   }
 }

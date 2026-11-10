@@ -13,7 +13,6 @@ import type { Pact } from "../../types/Pact";
 import type { LocationInfo } from "../../util/searchUtils";
 import MapContainer from "./MapContainer";
 import MapSidebar from "./MapSidebar";
-import MobileList from "./MobileList";
 
 interface MapProps {
   pacts: Pact[];
@@ -214,12 +213,6 @@ function Map({ pacts }: MapProps) {
           />
         </div>
 
-        <MobileList
-          searchQuery={searchQuery}
-          zooming={zooming}
-          closestPacts={closestPacts}
-          filteredPacts={filteredPacts}
-        />
       </div>
     </div>
   );
