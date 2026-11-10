@@ -1,0 +1,38 @@
+.c-result {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+
+  &__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  &__title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+
+  &__body {
+    flex: 1;
+  }
+
+  &__description {
+    display: flex;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+  }
+}

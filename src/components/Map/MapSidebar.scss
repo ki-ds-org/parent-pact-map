@@ -1,0 +1,68 @@
+@use "../../styles/breakpoints" as breakpoints;
+
+.c-sidebar {
+  width: 100%;
+  min-width: 0;
+
+  &__heading {
+    padding: 0.25rem 0;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  &__controls {
+    display: flex;
+    width: 100%;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    font-size: 0.75rem;
+    pointer-events: auto;
+  }
+
+  &__location-button {
+    padding: 0;
+    border: 0;
+    background: transparent !important;
+    cursor: pointer;
+  }
+
+  &__location-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  &__results {
+    display: none;
+  }
+}
+
+@include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
+  .c-sidebar {
+    width: 50%;
+
+    &__heading {
+      padding: 0 0.5rem;
+    }
+
+    &__controls {
+      flex: none;
+      padding: 0.5rem;
+    }
+
+    &__results {
+      display: block;
+    }
+  }
+}

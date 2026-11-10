@@ -1,4 +1,4 @@
-@use "../../styles/breakpoints" as *;
+@use "../../styles/breakpoints" as breakpoints;
 
 .c-app {
   width: 100%;
@@ -46,7 +46,7 @@
   }
 }
 
-@media (min-width: $breakpoint-tablet) {
+@include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
   .c-app {
     &__spinner {
       width: 10rem;
@@ -59,7 +59,7 @@
   }
 }
 
-@media (min-width: 640px) {
+@include breakpoints.respond-from(640px) {
   .c-app__spinner {
     width: 8rem;
     height: 8rem;

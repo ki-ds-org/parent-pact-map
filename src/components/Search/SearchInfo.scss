@@ -1,0 +1,17 @@
+.c-search-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-grey-light-secondary);
+
+  &__title {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  &__description {
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+}

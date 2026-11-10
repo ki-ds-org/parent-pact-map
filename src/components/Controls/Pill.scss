@@ -1,0 +1,18 @@
+.c-pill {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+
+  &--primary {
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+  }
+
+  &--secondary {
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+  }
+}

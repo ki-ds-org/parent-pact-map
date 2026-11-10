@@ -1,20 +1,4 @@
-.c-search-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--color-grey-light-secondary);
-
-  &__title {
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-
-  &__description {
-    font-size: 0.75rem;
-    font-style: italic;
-  }
-}
+@use "../../styles/breakpoints" as breakpoints;
 
 .c-results {
   width: 100%;
@@ -88,46 +72,7 @@
   }
 }
 
-.c-result {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-
-  &__heading {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  &__title {
-    min-width: 0;
-    overflow-wrap: anywhere;
-    font-size: 1.125rem;
-    font-weight: 500;
-  }
-
-  &__body {
-    flex: 1;
-  }
-
-  &__description {
-    display: flex;
-    gap: 0.25rem;
-    font-size: 0.875rem;
-  }
-
-  &__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding-top: 0.5rem;
-  }
-}
-
-@media (min-width: 768px) {
+@include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
   .c-results__empty-action {
     width: 50%;
   }

@@ -1,0 +1,27 @@
+.c-search-dropdown {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__message {
+    padding: 0.625rem;
+    text-align: center;
+  }
+
+  &__option {
+    padding: 0.625rem;
+    border-bottom: 1px solid #666;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    &:hover,
+    &[aria-selected="true"] {
+      background: rgba(68, 68, 68, 0.6);
+    }
+  }
+
+  &__primary {
+    font-weight: 600;
+  }
+}
