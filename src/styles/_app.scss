@@ -1,5 +1,6 @@
 .c-app {
   width: 100%;
+  padding-inline: var(--outer-margin);
 
   &__state {
     display: flex;

@@ -1,6 +1,7 @@
 .c-map {
   position: relative;
-  min-width: 0;
+  max-width: var(--max-width);
+  margin-inline: auto;
 
   &__content {
     display: flex;
@@ -18,8 +19,8 @@
     left: 0.5rem;
     padding: 0.5rem 1rem;
     transform: translateY(-200%);
-    color: var(--parent-pact-map-color-on-primary);
-    background: var(--parent-pact-map-color-primary);
+    color: var(--color-on-primary);
+    background: var(--color-primary);
 
     &:focus {
       transform: translateY(0);

@@ -3,7 +3,7 @@ import classNames from "classnames";
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant: "primary" | "secondary" | "tertiary";
+  variant: "primary" | "secondary" | "tertiary" | "search";
   type?: "button" | "submit" | "reset";
   size?: "sm" | "lg";
   fullWidth?: boolean;

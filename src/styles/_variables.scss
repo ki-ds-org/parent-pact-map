@@ -1,13 +1,29 @@
 $breakpoint-tablet: 768px;
 
 #react-pact-map {
-  --parent-pact-map-color-background: #0a0b0d;
-  --parent-pact-map-color-on-background: #fff;
-  --parent-pact-map-color-background-secondary: #444;
-  --parent-pact-map-color-surface: #1a1731;
-  --parent-pact-map-color-surface-secondary: #29244b;
-  --parent-pact-map-color-primary: #f7c100;
-  --parent-pact-map-color-on-primary: #0a0b0d;
-  --parent-pact-map-color-primary-hover: #131cc4;
-  --parent-pact-map-color-accent-hover: #f5642a;
+  --color-green: #2D7F62;
+  --color-yellow: #FBCA41;
+  --color-white: #ffffff;
+  --color-black: #333;
+  --color-grey-light: #f2f2f2;
+  --border-radius-small: 8px;
+  --border-radius-default: 20px;
+  --border-radius-button: 60px;
+  --outer-margin: clamp(20px, calc(10.526px + 2.632vw), 50px);
+  --max-width: 1500px;
+  --gap: clamp(16px, 0.39vw + 14.76px, 20px);
+  --color-yellow-light: #ffdd7e;
+  --color-grey-10: #E6E6E6;
+  --color-grey-25: #BFBFBF;
+  --color-grey-60: #666666;
+  --color-green-20: #D9E8E0;
+  --color-green-40: #ABCCC0;
+  --color-green-60: #6BA591;
+  --color-grey-light-secondary: #444;
+  --color-surface: #1a1731;
+  --color-surface-secondary: #29244b;
+  --color-primary: #f7c100;
+  --color-on-primary: #0a0b0d;
+  --color-primary-hover: #131cc4;
+  --color-accent-hover: #f5642a;
 }

@@ -12,11 +12,11 @@
 }
 
 .react-pact-map {
-  min-height: 100%;
-  color: var(--parent-pact-map-color-on-background);
-  background-color: var(--parent-pact-map-color-background);
-  font-family: "Open Sans", Arial, sans-serif;
-  line-height: 1.5;
+  min-height: 100vh;
+  color: var(--color-black);
+  background-color: var(--color-grey-light);
+  font-family: Arial, sans-serif;
+  line-height: 1.4;
 
   h1,
   h2,
@@ -26,22 +26,17 @@
   }
 
   h3 {
-    color: var(--parent-pact-map-color-on-background);
+    color: var(--color-black);
     font-family: "Open Sans", Arial, sans-serif;
   }
 
   a {
-    color: var(--parent-pact-map-color-on-primary);
+    color: var(--color-on-primary);
     text-decoration: none;
   }
 
-  button,
-  input {
-    font: inherit;
-  }
-
   :focus-visible {
-    outline: 3px solid var(--parent-pact-map-color-primary);
+    outline: 3px solid var(--color-primary);
     outline-offset: 3px;
   }
 
@@ -51,7 +46,7 @@
 
   [aria-live],
   [role="status"] {
-    color: var(--parent-pact-map-color-on-background);
+    color: var(--color-black);
   }
 }
 

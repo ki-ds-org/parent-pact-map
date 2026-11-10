@@ -275,7 +275,7 @@ function Search({ onSearch, onClear, apiKey }: SearchProps) {
 
         <Button
           type="submit"
-          variant="primary"
+          variant="search"
           disabled={isLoading || !isGoogleMapsLoaded}
         >
           Sök

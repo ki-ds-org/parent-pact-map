@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.5rem 0.75rem;
-  background: var(--parent-pact-map-color-background-secondary);
+  background: var(--color-grey-light-secondary);
 
   &__title {
     font-size: 0.875rem;
@@ -74,16 +74,16 @@
     width: 100%;
     padding: 0.25rem 1rem;
     border-radius: 999px;
-    color: var(--parent-pact-map-color-on-primary);
-    background: var(--parent-pact-map-color-primary);
+    color: var(--color-on-primary);
+    background: var(--color-primary);
     font-size: 0.875rem;
     font-weight: 600;
     text-align: center;
     transition: background-color 0.15s;
 
     &:hover {
-      color: var(--parent-pact-map-color-on-primary);
-      background: var(--parent-pact-map-color-primary-hover);
+      color: var(--color-on-primary);
+      background: var(--color-primary-hover);
     }
   }
 }
@@ -129,7 +129,7 @@
 
 .c-mobile-results {
   width: 100%;
-  border: 1px solid var(--parent-pact-map-color-primary);
+  border: 1px solid var(--color-primary);
   border-radius: 0 0 0.5rem 0.5rem;
   pointer-events: auto;
 }
