@@ -32,10 +32,6 @@ export default function MapSidebar({
       className="c-sidebar"
       aria-labelledby="map-sidebar-title"
     >
-
-      <h1 id="map-sidebar-title" className="c-sidebar__title">
-        Hitta lokala Föräldrapakter
-      </h1>
       <div>
         <div className="c-sidebar__controls">
           <Search
