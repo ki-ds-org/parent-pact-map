@@ -1,11 +1,10 @@
-import classNames from "classnames";
 import L from "leaflet";
 import "leaflet.heat";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet/dist/leaflet.css";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useGeolocation } from "../hooks/useGeolocation";
 import useIsMobileView from "../hooks/useIsMobileView";
 import { useMapData } from "../hooks/useMapData";
@@ -41,6 +40,7 @@ function Map({ pacts }: MapProps) {
     "school"
   );
   const [geolocationMessage, setGeolocationMessage] = useState("");
+  const isResettingMap = useRef(false);
 
   const isMobile = useIsMobileView();
   const { heatPoints, markerPoints, pacts: mapPacts } = useMapData(pacts, {
@@ -108,6 +108,8 @@ function Map({ pacts }: MapProps) {
   };
 
   const handleZooming = () => {
+    if (isResettingMap.current) return;
+
     if (isProgrammaticZoom) {
       setCurrentLocationInfo(undefined);
       setIsProgrammaticZoom(false);
@@ -117,13 +119,19 @@ function Map({ pacts }: MapProps) {
     setClosestPacts([]);
   };
 
-  const mapContainerClass = classNames(
-    "w-full md:w-1/2 z-10 relative rounded-t-lg overflow-hidden",
-    {
-      "h-[50vh] md:h-[100vh]": searchQuery || zooming,
-      "h-full": !searchQuery && !zooming,
+  const handleClearSearch = () => {
+    setSearchQuery(null);
+    setCurrentLocationInfo(undefined);
+    setClosestPacts([]);
+    setZooming(false);
+    if (mapRef) {
+      isResettingMap.current = true;
+      mapRef.invalidateSize();
+      mapRef.setView([62.0, 10.0], isMobile ? 4 : 5);
+      isResettingMap.current = false;
+      setZooming(false);
     }
-  );
+  };
 
   const getClosestPacts = useCallback(() => {
     if (!navigator.geolocation) {
@@ -180,16 +188,17 @@ function Map({ pacts }: MapProps) {
   const filteredPacts = mapPacts.filter((pact) => visiblePactIds.has(pact.id));
 
   return (
-    <div className="flex h-full relative">
+    <div className="flex relative min-w-0">
       <a
         href="#interactive-map"
         className="sr-only focus:not-sr-only focus:absolute focus:z-[1000] focus:top-2 focus:left-2 focus:bg-primary focus:text-on-primary focus:px-4 focus:py-2"
       >
         Hoppa till kartan
       </a>
-      <div className="flex flex-1 flex-col md:flex-row w-full md:w-1/2 p-4 md:p-0">
+      <div className="flex flex-1 min-w-0 flex-col md:flex-row w-full p-4 md:p-0">
         <MapSidebar
           onSearch={handleSearch}
+          onClearSearch={handleClearSearch}
           onFindClosest={getClosestPacts}
           searchQuery={searchQuery}
           zooming={zooming}
@@ -201,7 +210,7 @@ function Map({ pacts }: MapProps) {
           onAggregationChange={setAggregation}
         />
 
-        <div className={mapContainerClass}>
+        <div className="w-full min-w-0 md:w-1/2 h-[50vh] h-[50svh] min-h-60 md:h-[80vh] md:h-[80svh] md:min-h-0 z-10 relative md:sticky md:top-0 md:self-start rounded-t-lg overflow-hidden">
           <MapContainer
             heatPoints={heatPoints}
             markerPoints={markerPoints}

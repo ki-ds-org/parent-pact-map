@@ -9,7 +9,7 @@ interface ListProps {
 
 function List({ filteredPacts }: ListProps) {
   return (
-    <div className="w-full h-full overflow-y-scroll bg-inherit">
+    <div className="w-full bg-inherit">
       <div className="">
         <ul aria-label="Föräldrapakter">
           {filteredPacts.map((pact, i) => {

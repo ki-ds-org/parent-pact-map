@@ -5,14 +5,14 @@ import usePacts from "./hooks/usePacts";
 
 function App() {
   const { pacts, loading, error, retry } = usePacts();
-  const containerClass = "react-pact-map w-full h-full bg-background text-on-background overflow-scroll";
+  const containerClass = "react-pact-map w-full bg-background text-on-background";
 
   if (loading) {
     return (
       <main
         className={
           containerClass +
-          " flex flex-col items-center justify-center gap-6 min-h-screen"
+          " flex flex-col items-center justify-center gap-6 min-h-48"
         }
       >
         <p className="sr-only" role="status" aria-live="polite">
@@ -31,7 +31,7 @@ function App() {
 
   if (error) {
     return (
-      <main className={containerClass + " flex flex-col items-center justify-center gap-4 p-4"}>
+      <main className={containerClass + " min-h-48 flex flex-col items-center justify-center gap-4 p-4"}>
         <p className="text-on-background text-center" role="alert">
           Kunde inte ladda pakter: {error}
         </p>
