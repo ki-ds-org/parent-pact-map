@@ -45,7 +45,7 @@
 
     @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
       height: 62px;
-    padding: 1.6em;
+     padding-inline: 1.6em;
     }
   }
 
