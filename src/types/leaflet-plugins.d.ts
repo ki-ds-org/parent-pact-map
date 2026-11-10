@@ -17,10 +17,6 @@ declare module "leaflet" {
     minOpacity?: number;
   }
 
-  interface BoundaryCanvasOptions extends TileLayerOptions {
-    boundary: GeoJSON.GeoJsonObject;
-  }
-
   function markerClusterGroup(
     options?: MarkerClusterGroupOptions
   ): FeatureGroup;
@@ -28,10 +24,4 @@ declare module "leaflet" {
     points: LatLngExpression[],
     options?: HeatLayerOptions
   ): Layer;
-
-  namespace TileLayer {
-    class BoundaryCanvas extends TileLayer {
-      constructor(url: string, options: BoundaryCanvasOptions);
-    }
-  }
 }
