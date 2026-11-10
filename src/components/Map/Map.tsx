@@ -204,13 +204,6 @@ function Map({ pacts }: MapProps) {
 
   return (
     <div className="c-map">
-      <a
-        href="#map-view-tab-map"
-        className="c-map__skip-link"
-        onClick={() => setActiveView("map")}
-      >
-        Hoppa till kartan
-      </a>
       <div className="c-map__content">
         <MapSidebar
           onSearch={handleSearch}
