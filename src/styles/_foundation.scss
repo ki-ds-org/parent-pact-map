@@ -1,0 +1,46 @@
+#react-pact-map {
+  all: initial;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#react-pact-map *,
+#react-pact-map *::before,
+#react-pact-map *::after {
+  box-sizing: border-box;
+}
+
+.react-pact-map {
+  min-height: 100vh;
+  color: var(--color-black);
+  background-color: var(--color-grey-light);
+  font-family: Arial, sans-serif;
+  line-height: 1.4;
+
+  :focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  input:focus-visible {
+    outline-offset: 1px;
+  }
+
+  [aria-live],
+  [role="status"] {
+    color: var(--color-black);
+  }
+}
+
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

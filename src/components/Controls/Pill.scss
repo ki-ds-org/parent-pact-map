@@ -1,0 +1,26 @@
+@use "../../styles/breakpoints" as breakpoints;
+
+.c-pill {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  padding: 0.5em 0.8em;
+  border-radius: var(--border-radius-small);
+  font-size: 13px;
+  align-items: center;
+
+  @include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
+    font-size: 14px;
+    padding: 1em 1.2em;
+  }
+
+  &--primary {
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+  }
+
+  &--secondary {
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+  }
+}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { config } from "../config/env";
 import type { Pact } from "../types/Pact";
+import { isPactApiResponse } from "../util/pactApi";
 
 function usePacts(): {
   pacts: Pact[];
@@ -22,12 +23,7 @@ function usePacts(): {
         return res.json();
       })
       .then((data: unknown) => {
-        if (
-          typeof data !== "object" ||
-          data === null ||
-          !("municipalities" in data) ||
-          !Array.isArray(data.municipalities)
-        ) {
+        if (!isPactApiResponse(data)) {
           setError("Unexpected API response format");
           setPacts([]);
           return;
@@ -41,9 +37,8 @@ function usePacts(): {
         // Flatten municipalities and schools into the Pact shape
         // expected by the rest of the app.
         const pacts: Pact[] = data.municipalities.flatMap(
-          (muni: any) =>
-            Array.isArray(muni.schools)
-              ? muni.schools.map((school: any): Pact => ({
+          (muni) =>
+            muni.schools?.map((school): Pact => ({
                   id: school.id,
                   name: school.school,
                   municipality: [muni.municipality],
@@ -51,9 +46,8 @@ function usePacts(): {
                   coordinates: school.coordinates,
                   studentCount: school.studentCount ?? 0,
                   parentCount: school.parentCount ?? 0,
-                  contact: school.contact,
-                }))
-              : []
+                  contact: school.contact ?? undefined,
+                })) ?? []
         );
 
         setPacts(pacts);
