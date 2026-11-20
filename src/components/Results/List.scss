@@ -1,0 +1,78 @@
+@use "../../styles/breakpoints" as breakpoints;
+
+.c-results {
+  width: 100%;
+
+  &__items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__empty {
+    text-align: center;
+  }
+
+  &__empty-content {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__empty-image-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__empty-image {
+    width: 3.5rem;
+    height: auto;
+  }
+
+  &__empty-copy {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  &__empty-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  &__empty-description {
+    font-size: 0.875rem;
+    font-weight: 300;
+  }
+
+  &__empty-action {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  &__create-link {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    border-radius: 999px;
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color 0.15s;
+
+    &:hover {
+      color: var(--color-on-primary);
+      background: var(--color-primary-hover);
+    }
+  }
+}
+
+@include breakpoints.respond-from(breakpoints.$breakpoint-tablet) {
+  .c-results__empty-action {
+    width: 50%;
+  }
+}

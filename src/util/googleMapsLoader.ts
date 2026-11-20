@@ -1,12 +1,13 @@
 let mapsLoaderPromise: Promise<void> | null = null;
 
 export function loadGoogleMapsJs(apiKey?: string): Promise<void> {
-  // If already loaded, resolve immediately
-  if ((window as any).google?.maps?.Geocoder) return Promise.resolve();
+  if (typeof google !== "undefined" && google.maps?.Geocoder) {
+    return Promise.resolve();
+  }
   if (mapsLoaderPromise) return mapsLoaderPromise;
 
   mapsLoaderPromise = new Promise<void>((resolve, reject) => {
-    (window as any).__initGmaps = () => resolve();
+    window.__initGmaps = () => resolve();
 
     const params = new URLSearchParams({
       key: apiKey ?? "",

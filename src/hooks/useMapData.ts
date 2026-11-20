@@ -1,11 +1,9 @@
 import { useMemo } from "react";
 import type { Pact } from "../types/Pact";
 
-export type HeatMetric = "students" | "parents";
 export type AggregationMode = "school" | "municipality";
 
 type UseMapDataOptions = {
-  heatMetric?: HeatMetric;
   aggregation?: AggregationMode;
 };
 
@@ -81,7 +79,7 @@ export function useMapData(
   pacts: Pact[],
   options: UseMapDataOptions = {}
 ) {
-  const { heatMetric = "students", aggregation = "school" } = options;
+  const { aggregation = "school" } = options;
 
   const sourcePacts = useMemo(
     () =>
@@ -109,12 +107,10 @@ export function useMapData(
           [
             pact.coordinates[0],
             pact.coordinates[1],
-            heatMetric === "parents"
-              ? pact.parentCount
-              : pact.studentCount,
+            pact.studentCount,
           ] as [number, number, number]
       ),
-    [validPacts, heatMetric]
+    [validPacts]
   );
 
   const markerPoints = useMemo(
@@ -135,32 +131,3 @@ export function useMapData(
     markerPoints,
   };
 }
-
-// TODO: Add schools back in when data is available
-// export function useMapDataWithSchools(pacts: Pact[]) {
-//   const allSchools = useMemo(() => 
-//     pacts.flatMap((pact) =>
-//       pact.schools
-//         .filter((school) => school.coordinates)
-//         .map((school) => ({ ...school, pact }))
-//     ), [pacts]);
-
-//   const heatPoints = useMemo(() => 
-//     allSchools.map((school) => [
-//       school.coordinates[0],
-//       school.coordinates[1],
-//       school.studentCount,
-//     ] as [number, number, number]), [allSchools]);
-
-//   const markerPoints = useMemo(() => 
-//     allSchools.map((school) => [
-//       school, 
-//       [school.coordinates[0], school.coordinates[1]]
-//     ] as [School, [number, number]]), [allSchools]);
-
-//   return {
-//     allSchools,
-//     heatPoints,
-//     markerPoints,
-//   };
-// } 

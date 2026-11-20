@@ -1,54 +1,7 @@
 import { useEffect, useState } from "react";
 import { config } from "../config/env";
 import type { Pact, PactMunicipality } from "../types/Pact";
-
-type ApiSchool = {
-  id: string;
-  school: string;
-  coordinates: [number, number];
-  studentCount?: number;
-  parentCount?: number;
-  contact?: string;
-};
-
-type ApiMunicipality = {
-  municipality: string;
-  coordinates: [number, number];
-  schools?: ApiSchool[];
-};
-
-function isCoordinates(value: unknown): value is [number, number] {
-  return (
-    Array.isArray(value) &&
-    value.length === 2 &&
-    value.every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate))
-  );
-}
-
-function isApiMunicipality(value: unknown): value is ApiMunicipality {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "municipality" in value &&
-    typeof value.municipality === "string" &&
-    "coordinates" in value &&
-    isCoordinates(value.coordinates) &&
-    (!("schools" in value) || Array.isArray(value.schools))
-  );
-}
-
-function isApiSchool(value: unknown): value is ApiSchool {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "id" in value &&
-    typeof value.id === "string" &&
-    "school" in value &&
-    typeof value.school === "string" &&
-    "coordinates" in value &&
-    isCoordinates(value.coordinates)
-  );
-}
+import { isPactApiResponse } from "../util/pactApi";
 
 function usePacts(): {
   pacts: Pact[];
@@ -72,36 +25,29 @@ function usePacts(): {
         return res.json();
       })
       .then((data: unknown) => {
-        if (
-          typeof data !== "object" ||
-          data === null ||
-          !("municipalities" in data) ||
-          !Array.isArray(data.municipalities)
-        ) {
+        if (!isPactApiResponse(data)) {
           setError("Unexpected API response format");
           setPacts([]);
           setMunicipalities([]);
           return;
         }
 
-        const apiMunicipalities = data.municipalities.filter(isApiMunicipality);
-        const municipalities: PactMunicipality[] = apiMunicipalities.map(
+        const municipalities: PactMunicipality[] = data.municipalities.map(
           (municipality) => ({
             name: municipality.municipality,
             coordinates: municipality.coordinates,
-            schools: (municipality.schools ?? [])
-              .filter(isApiSchool)
-              .map(
-                (school): Pact => ({
-                  id: school.id,
-                  name: school.school,
-                  municipality: [municipality.municipality],
-                  coordinates: school.coordinates,
-                  studentCount: school.studentCount ?? 0,
-                  parentCount: school.parentCount ?? 0,
-                  contact: school.contact,
-                })
-              ),
+            schools: (municipality.schools ?? []).map(
+              (school): Pact => ({
+                id: school.id,
+                name: school.school,
+                municipality: [municipality.municipality],
+                school: school.school,
+                coordinates: school.coordinates,
+                studentCount: school.studentCount ?? 0,
+                parentCount: school.parentCount ?? 0,
+                contact: school.contact ?? undefined,
+              })
+            ),
           })
         );
         const pacts = municipalities.flatMap((municipality) => municipality.schools);
