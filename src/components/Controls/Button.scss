@@ -51,7 +51,7 @@
 
   &:hover,
   &:focus {
-    color: var(--color-white);
+    color: var(--color-white) !important;
     border-color: var(--color-black);
     background-color: var(--color-black);
   }
