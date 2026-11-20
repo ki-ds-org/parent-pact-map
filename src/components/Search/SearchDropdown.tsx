@@ -1,50 +1,55 @@
-import type { Suggestion } from "../../types/SearchTypes";
+import type { SearchOption } from "../../types/SearchTypes";
 
 interface SearchDropdownProps {
   activeIndex: number;
-  isLoading: boolean;
-  suggestions: Suggestion[];
-  onSuggestionClick: (s: Suggestion) => void;
+  suggestions: SearchOption[];
+  onSuggestionClick: (option: SearchOption) => void;
 }
 
 function SearchDropdown({
   activeIndex,
-  isLoading,
   suggestions,
   onSuggestionClick,
 }: SearchDropdownProps) {
-  if (isLoading) {
-    return <div className="c-search-dropdown__message" role="status">Laddar förslag...</div>;
-  }
-
   if (suggestions.length === 0) {
-    return <div className="c-search-dropdown__message">Inga förslag hittades.</div>;
+    return (
+      <div className="c-search-dropdown__message">
+        Inga förslag hittades.
+      </div>
+    );
   }
 
   return (
     <ul id="municipality-suggestions" role="listbox" className="c-search-dropdown">
-      {suggestions.map((s, index) => {
+      {suggestions.map((option, index) => {
         const key =
-          s.placePrediction?.placeId ??
-          s.placePrediction?.text.toString() ??
-          "";
-        const primary = s.placePrediction?.text.toString() ?? "";
+          option.kind === "municipality"
+            ? `municipality-${option.municipality.name}`
+            : `school-${option.pact.id}`;
+        const label =
+          option.kind === "municipality"
+            ? option.municipality.name
+            : option.pact.name;
+        const municipality =
+          option.kind === "school" ? option.pact.municipality[0] : undefined;
+
         return (
           <li
             key={key}
             id={`municipality-option-${index}`}
             role="option"
             aria-selected={activeIndex === index}
-            onMouseDown={(e) => {
-              // Select on mousedown: inside a shadow root the dropdown can be
-              // unmounted (outside-click/blur handling) before click fires.
-              e.preventDefault();
-              e.stopPropagation();
-              onSuggestionClick(s);
+            onMouseDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onSuggestionClick(option);
             }}
             className="c-search-dropdown__option"
           >
-            <div className="c-search-dropdown__primary">{primary}</div>
+            <div className="c-search-dropdown__primary">{label}</div>
+            {municipality && (
+              <div className="c-search-dropdown__secondary">{municipality}</div>
+            )}
           </li>
         );
       })}

@@ -1,9 +1,9 @@
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import type { LocationInfo } from "../../util/searchUtils";
+import type { PactMunicipality } from "../../types/Pact";
 import Pill from "../Controls/Pill";
 import Search from "../Search/Search";
 import SegmentedToggle from "../Controls/SegmentedToggle";
-import { config } from "../../config/env";
 import MapViewTabs, { type MapView } from "./MapViewTabs";
 
 interface MapSidebarProps {
@@ -15,6 +15,7 @@ interface MapSidebarProps {
   onAggregationChange: (mode: "school" | "municipality") => void;
   activeView: MapView;
   onViewChange: (view: MapView) => void;
+  municipalities: PactMunicipality[];
 }
 
 export default function MapSidebar({
@@ -26,6 +27,7 @@ export default function MapSidebar({
   onAggregationChange,
   activeView,
   onViewChange,
+  municipalities,
 }: MapSidebarProps) {
   return (
     <aside
@@ -37,7 +39,7 @@ export default function MapSidebar({
           <Search
             onSearch={onSearch}
             onClear={onClearSearch}
-            apiKey={config.googleApiKey!}
+            municipalities={municipalities}
           />
           <div className="c-sidebar__actions">
             <button

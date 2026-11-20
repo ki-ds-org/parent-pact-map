@@ -3,7 +3,7 @@ import Button from "../Controls/Button";
 import usePacts from "../../hooks/usePacts";
 
 function App() {
-  const { pacts, loading, error, retry } = usePacts();
+  const { pacts, municipalities, loading, error, retry } = usePacts();
   const containerClass = "react-pact-map c-app";
 
   if (loading) {
@@ -43,7 +43,7 @@ function App() {
 
   return (
     <main className={containerClass} aria-label="Föräldrapakten">
-      <Map pacts={pacts} />
+      <Map pacts={pacts} municipalities={municipalities} />
     </main>
   );
 }

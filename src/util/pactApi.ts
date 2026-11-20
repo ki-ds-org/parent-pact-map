@@ -9,6 +9,7 @@ interface PactApiSchool {
 
 interface PactApiMunicipality {
   municipality: string;
+  coordinates: [number, number];
   schools?: PactApiSchool[];
 }
 
@@ -28,7 +29,9 @@ function isSchool(value: unknown): value is PactApiSchool {
     typeof value.school === "string" &&
     Array.isArray(coordinates) &&
     coordinates.length === 2 &&
-    coordinates.every((coordinate) => typeof coordinate === "number") &&
+    coordinates.every(
+      (coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate)
+    ) &&
     (value.studentCount === undefined ||
       typeof value.studentCount === "number") &&
     (value.parentCount === undefined || typeof value.parentCount === "number") &&
@@ -40,8 +43,14 @@ function isSchool(value: unknown): value is PactApiSchool {
 
 function isMunicipality(value: unknown): value is PactApiMunicipality {
   if (!isRecord(value)) return false;
+  const coordinates = value.coordinates;
   return (
     typeof value.municipality === "string" &&
+    Array.isArray(coordinates) &&
+    coordinates.length === 2 &&
+    coordinates.every(
+      (coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate)
+    ) &&
     (value.schools === undefined ||
       (Array.isArray(value.schools) && value.schools.every(isSchool)))
   );
